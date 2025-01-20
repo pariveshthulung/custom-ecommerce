@@ -3,6 +3,9 @@ namespace Ecommerce.Shared.DomainDesign.Abstraction;
 public abstract class Entity
 {
     public Guid Guid { get; protected set; }
+    public bool IsActive { get; protected set; }
+    public bool IsDeleted { get; protected set; }
+
     protected Entity()
     {
         Guid = Guid.NewGuid();
@@ -72,10 +75,9 @@ public abstract class Entity
             UpdatedBy = updatedBy;
             UpdatedOn = updatedOn;
         }
-
-        public abstract class VersionedEntity : AuditableEntity
-        {
-            public byte[]? TimeStamp { get; private set; }
-        }
+    }
+    public abstract class VersionedEntity : AuditableEntity
+    {
+        public byte[]? TimeStamp { get; private set; }
     }
 }

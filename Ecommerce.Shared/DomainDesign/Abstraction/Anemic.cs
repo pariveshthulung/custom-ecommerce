@@ -3,6 +3,9 @@ namespace Ecommerce.Shared.DomainDesign.Abstraction;
 public abstract class Anemic
 {
 	public Guid Guid { get; protected set; }
+	public bool IsActive { get; protected set; }
+	public bool IsDeleted { get; protected set; }
+
 	protected Anemic()
 	{
 		Guid = Guid.NewGuid();

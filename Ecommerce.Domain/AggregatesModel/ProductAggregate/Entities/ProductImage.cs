@@ -1,5 +1,3 @@
-using Ecommerce.Shared.DomainDesign.Abstraction;
-
 namespace Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities;
 
 public class ProductImage : Entity

@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="AggregatesModel/CategoryAggregate/" />
-    <Folder Include="AggregatesModel/OrderAggregate/" />
-    <Folder Include="AggregatesModel/ProductCategoryAggregate/" />
-    <Folder Include="AggregatesModel/ProductConfirmAggregate/" />
-    <Folder Include="AggregatesModel/StoreAggregate/" />
     <Folder Include="AggregatesModel/UserAggregate/" />
     <Folder Include="AggregatesModel/UserAggregate/Entities/" />
     <Folder Include="AggregatesModel/UserAggregate/Enumerations/" />

@@ -1,6 +1,3 @@
-using Ecommerce.Shared.DomainDesign.Abstraction;
-using static Ecommerce.Shared.DomainDesign.Abstraction.Entity;
-
 namespace Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities;
 
 public class Product : AuditableEntity, IAggregateRoot

@@ -1,4 +1,4 @@
-namespace Ecommerce.Domain.AggregatesModel.CategoryAggregate;
+namespace Ecommerce.Domain.AggregatesModel.CategoryAggregate.Entities;
 
 public class InvarientOption : Entity
 {

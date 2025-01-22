@@ -1,4 +1,4 @@
-namespace Ecommerce.Domain.AggregatesModel.CategoryAggregate;
+namespace Ecommerce.Domain.AggregatesModel.CategoryAggregate.Entities;
 
 public class Category : Entity, IAggregateRoot
 {
@@ -12,9 +12,8 @@ public class Category : Entity, IAggregateRoot
     }
     public static Category Create(string name)
         => new(name);
-    public void AddInvarient(string name)
+    public void AddInvarient(Invarient invarient)
     {
-        var invarient = Invarient.Create(this.Id, name);
         _invarients.Add(invarient);
     }
 

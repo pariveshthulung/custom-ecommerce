@@ -12,8 +12,8 @@ public class ProductItem : Entity
     public int ProductId { get; private set; }
     public string SKU { get; private set; } = default!;
     public int Quantity { get; private set; }
-    public Decimal Price { get; private set; }
-    private ProductItem(string image, int productId, string sku, int quantity, Decimal price)
+    public decimal Price { get; private set; }
+    private ProductItem(string image, int productId, string sku, int quantity, decimal price)
     {
         Image = Guard.Against.NullOrWhiteSpace(image);
         ProductId = Guard.Against.NegativeOrZero(productId);
@@ -21,7 +21,7 @@ public class ProductItem : Entity
         Quantity = Guard.Against.NegativeOrZero(quantity);
         Price = Guard.Against.NegativeOrZero(price);
     }
-    public static ProductItem Create(string image, int productId, string sku, int quantity, Decimal price)
+    public static ProductItem Create(string image, int productId, string sku, int quantity, decimal price)
     {
         return new ProductItem(image, productId, sku, quantity, price);
     }

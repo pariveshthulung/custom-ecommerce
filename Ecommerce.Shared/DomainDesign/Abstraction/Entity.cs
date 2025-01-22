@@ -10,6 +10,8 @@ public abstract class Entity
     {
         Guid = Guid.NewGuid();
     }
+    public void ModifyIsDeleted(bool value) => IsDeleted = value;
+    public void ModifyIsActive(bool value) => IsActive = value;
     private long _id;
     public long Id
     {

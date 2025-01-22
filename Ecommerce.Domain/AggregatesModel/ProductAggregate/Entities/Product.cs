@@ -14,6 +14,8 @@ public class Product : AuditableEntity, IAggregateRoot
     public IReadOnlyCollection<ProductImage> ProductImages => _productImages.AsReadOnly();
     private List<ProductItem> _productItems = [];
     public IReadOnlyCollection<ProductItem> ProductItems => _productItems.AsReadOnly();
+    private List<Category> _categories = [];
+    public IReadOnlyCollection<Category> Categories => _categories.AsReadOnly();
     private Product(string name, string description)
     {
         Name = Guard.Against.NullOrWhiteSpace(name);
@@ -23,14 +25,14 @@ public class Product : AuditableEntity, IAggregateRoot
     {
         return new Product(name, description);
     }
-    public void AddProductImage(string image)
+    public void AddProductImage(ProductImage productImage)
+        => _productImages.Add(productImage);
+
+    public void AddProductItem(ProductItem productItem)
+        => _productItems.Add(productItem);
+    public void AddCategory(Category category)
     {
-        ProductImage productImage = ProductImage.Create(this.Id, image);
-        _productImages.Add(productImage);
-    }
-    public void AddProductItem(string image, string sku, int quantity, decimal price)
-    {
-        ProductItem productItem = ProductItem.Create(image, this.Id, sku, quantity, price);
-        _productItems.Add(productItem);
+        if (!_categories.Contains(category))
+            _categories.Add(category);
     }
 }

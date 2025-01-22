@@ -1,34 +1,34 @@
-namespace Ecommerce.Domain.AggregatesModel.OrderAggregate;
+namespace Ecommerce.Domain.AggregatesModel.OrderAggregate.Entities;
 
 public class Order : Entity, IAggregateRoot
 {
     public new int Id { get; private set; }
-    public Decimal OrderTotal { get; private set; }
+    public decimal? OrderTotal { get; private set; }
+    public Guid CustomerId { get; private set; }
     public DateTime OrderedDate { get; private set; }
     public DateTime? PaymentDate { get; private set; }
     public string? TransactionCode { get; private set; }
     private List<OrderItem> _orderItems = [];
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
     private Order(
-        decimal orderTotal,
+        Guid customerId,
         DateTime orderDate,
         DateTime paymentDate,
         string transactionCode)
     {
-        OrderTotal = Guard.Against.NegativeOrZero(orderTotal);
+        CustomerId = Guard.Against.Null(customerId);
         OrderedDate = orderDate;
         PaymentDate = paymentDate;
         TransactionCode = transactionCode;
     }
     public static Order Create(
-        decimal orderTotal,
+        Guid customerId,
         DateTime orderDate,
         DateTime paymentDate,
         string transactionCode)
-    => new(orderTotal, orderDate, paymentDate, transactionCode);
-    public void AddOrderItem(decimal price, int quantity)
+    => new(customerId, orderDate, paymentDate, transactionCode);
+    public void AddOrderItem(OrderItem orderItem)
     {
-        var orderItem = OrderItem.Create(Id, price, quantity);
         _orderItems.Add(orderItem);
     }
 

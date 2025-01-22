@@ -1,4 +1,4 @@
-namespace Ecommerce.Domain.AggregatesModel.OrderAggregate;
+namespace Ecommerce.Domain.AggregatesModel.OrderAggregate.Entities;
 
 public class OrderItem : Entity
 {

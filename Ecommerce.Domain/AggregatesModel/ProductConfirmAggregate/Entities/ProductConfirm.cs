@@ -1,4 +1,4 @@
-namespace Ecommerce.Domain.AggregatesModel.ProductConfirmAggregate;
+namespace Ecommerce.Domain.AggregatesModel.ProductConfirmAggregate.Entities;
 
 public class ProductConfirm : Entity, IAggregateRoot
 {

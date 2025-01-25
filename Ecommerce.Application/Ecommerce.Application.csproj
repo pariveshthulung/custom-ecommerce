@@ -10,4 +10,11 @@
     <ProjectReference Include="../Ecommerce.Domain/Ecommerce.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ApplicationEvents/" />
+    <Folder Include="DependencyResolution/" />
+    <Folder Include="Features/Cart/Query/" />
+    <Folder Include="MappingProfile/" />
+  </ItemGroup>
+
 </Project>

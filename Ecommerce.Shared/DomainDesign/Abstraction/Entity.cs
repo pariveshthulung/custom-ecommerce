@@ -55,7 +55,7 @@ public abstract class Entity
         else
             return base.GetHashCode();
     }
-    public static bool operator ==(Entity left, Entity right)
+    public static bool operator ==(Entity? left, Entity? right)
     {
         if (left is null || right is null)
             return false;
@@ -64,7 +64,7 @@ public abstract class Entity
         return Equals(left, right);
     }
 
-    public static bool operator !=(Entity left, Entity right) => !(left == right);
+    public static bool operator !=(Entity? left, Entity? right) => !(left == right);
     public abstract class AuditableEntity : Entity
     {
         public int AddedBy { get; set; }

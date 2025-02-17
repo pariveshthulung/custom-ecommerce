@@ -3,7 +3,7 @@ namespace Ecommerce.Application.Wrappers;
 public class BaseResult
 {
     public bool Success { get; set; }
-    public List<Error> Errors { get; set; }
+    public List<Error> Errors { get; set; } = [];
     public static BaseResult Ok() => new() { Success = true };
     public static BaseResult Failure() => new() { Success = false };
     public static BaseResult Failure(Error error) => new() { Success = false, Errors = [error] };
@@ -27,7 +27,7 @@ public class BaseResult
 
 public class BaseResult<TData> : BaseResult
 {
-    public TData Data { get; set; }
+    public TData Data { get; set; } = default!;
     public static BaseResult<TData> Ok(TData data) => new() { Success = true, Data = data };
     public new static BaseResult<TData> Failure() => new() { Success = false };
     public new static BaseResult<TData> Failure(Error error)

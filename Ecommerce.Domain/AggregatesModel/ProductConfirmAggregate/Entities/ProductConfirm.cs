@@ -2,15 +2,15 @@ namespace Ecommerce.Domain.AggregatesModel.ProductConfirmAggregate.Entities;
 
 public class ProductConfirm : Entity, IAggregateRoot
 {
-    public new int Id { get; private set; }
-    public int ProductItemId { get; private set; }
-    public int InvarientOptionId { get; private set; }
-    private ProductConfirm(int productItemId, int invarientOptionId)
+    public long ProductItemId { get; private set; }
+    public long InvarientOptionId { get; private set; }
+
+    private ProductConfirm(long productItemId, long invarientOptionId)
     {
         ProductItemId = productItemId;
         InvarientOptionId = invarientOptionId;
     }
-    public static ProductConfirm Create(int productItemId, int invarientOptionId)
-        => new(productItemId, invarientOptionId);
 
+    public static ProductConfirm Create(long productItemId, long invarientOptionId) =>
+        new(productItemId, invarientOptionId);
 }

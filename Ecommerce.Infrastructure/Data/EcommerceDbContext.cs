@@ -2,8 +2,11 @@ using Ecommerce.Domain.Enumerations;
 
 namespace Ecommerce.Infrastructure.Data;
 
-public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : DbContext(options)
+public class EcommerceDbContext : DbContext
 {
+    public EcommerceDbContext(DbContextOptions<EcommerceDbContext> options)
+        : base(options) { }
+
     public const string ECOMMERCE_SCHEMA = "ecom";
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductImage> ProductImages { get; set; }
@@ -38,6 +41,7 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
             .ApplyConfiguration(new ProductEntityConfiguration())
             .ApplyConfiguration(new ProductImageEntityConfiguration())
             .ApplyConfiguration(new StoreEntityConfiguration())
-            .ApplyConfiguration(new ProductItemEntityConfiguration());
+            .ApplyConfiguration(new ProductItemEntityConfiguration())
+            .ApplyConfiguration(new UserTypeEnumEntityConfiguration());
     }
 }

@@ -10,7 +10,14 @@ public class Order : Entity, IAggregateRoot
     private List<OrderItem> _orderItems = [];
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
-    private Order(long customerId, DateTime orderDate, DateTime paymentDate, string transactionCode)
+    protected Order() { }
+
+    private Order(
+        long customerId,
+        DateTime orderDate,
+        DateTime? paymentDate,
+        string transactionCode
+    )
     {
         CustomerId = Guard.Against.NegativeOrZero(customerId);
         OrderedDate = orderDate;
@@ -21,7 +28,7 @@ public class Order : Entity, IAggregateRoot
     public static Order Create(
         long customerId,
         DateTime orderDate,
-        DateTime paymentDate,
+        DateTime? paymentDate,
         string transactionCode
     ) => new(customerId, orderDate, paymentDate, transactionCode);
 

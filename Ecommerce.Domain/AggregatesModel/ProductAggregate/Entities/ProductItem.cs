@@ -8,6 +8,8 @@ public class ProductItem : Entity
     public int Quantity { get; private set; }
     public decimal Price { get; private set; }
 
+    protected ProductItem() { }
+
     private ProductItem(string image, string sku, int quantity, decimal price)
     {
         Image = Guard.Against.NullOrWhiteSpace(image);

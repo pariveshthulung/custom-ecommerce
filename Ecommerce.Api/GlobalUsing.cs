@@ -1,2 +1,15 @@
+global using System.Security.Claims;
+global using Asp.Versioning;
+global using AutoMapper;
+global using Ecommerce.Api.Controllers.Common;
+global using Ecommerce.Api.Models;
+global using Ecommerce.Api.Routing;
 global using Ecommerce.Application.DependencyResolution;
+global using Ecommerce.Application.Features.AuthFeature.Commands;
+global using Ecommerce.Application.Features.AuthFeature.Commands.Register;
+global using Ecommerce.Application.Features.Carts.Query.Get;
 global using Ecommerce.Infrastructure.DependencyResolution;
+global using Ecommerce.Shared.Application.Mapping;
+global using MediatR;
+global using Microsoft.AspNetCore.Mvc;
+global using Swashbuckle.AspNetCore.Annotations;

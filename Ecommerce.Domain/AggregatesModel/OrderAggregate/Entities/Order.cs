@@ -3,7 +3,7 @@ namespace Ecommerce.Domain.AggregatesModel.OrderAggregate.Entities;
 public class Order : Entity, IAggregateRoot
 {
     public decimal? OrderTotal { get; private set; }
-    public long CustomerId { get; private set; }
+    public long AppUserId { get; private set; }
     public DateTime OrderedDate { get; private set; }
     public DateTime? PaymentDate { get; private set; }
     public string? TransactionCode { get; private set; }
@@ -12,14 +12,9 @@ public class Order : Entity, IAggregateRoot
 
     protected Order() { }
 
-    private Order(
-        long customerId,
-        DateTime orderDate,
-        DateTime? paymentDate,
-        string transactionCode
-    )
+    private Order(long appUserId, DateTime orderDate, DateTime? paymentDate, string transactionCode)
     {
-        CustomerId = Guard.Against.NegativeOrZero(customerId);
+        AppUserId = Guard.Against.NegativeOrZero(appUserId);
         OrderedDate = orderDate;
         PaymentDate = paymentDate;
         TransactionCode = transactionCode;

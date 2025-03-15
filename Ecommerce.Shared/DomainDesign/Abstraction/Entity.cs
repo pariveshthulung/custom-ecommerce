@@ -10,24 +10,33 @@ public abstract class Entity
     {
         Guid = Guid.NewGuid();
     }
+
     public void ModifyIsDeleted(bool value) => IsDeleted = value;
+
     public void ModifyIsActive(bool value) => IsActive = value;
+
     private long _id;
     public long Id
     {
         get { return _id; }
         protected set { _id = value; }
     }
+
     public bool IsTransient() => this.Id == default(Int32);
+
     private List<INotification> _domainEvent = [];
     public IReadOnlyCollection<INotification> DomainEvent => _domainEvent.AsReadOnly();
+
     public void AddDomainEvent(INotification domainEvent)
     {
         _domainEvent ??= [];
         _domainEvent.Add(domainEvent);
     }
+
     public void RemoveDomainEvent(INotification domainEvent) => _domainEvent.Remove(domainEvent);
+
     public void ClearDomainEvent() => _domainEvent.Clear();
+
     public override bool Equals(object? obj)
     {
         if (obj is null || obj is not Entity)
@@ -44,6 +53,7 @@ public abstract class Entity
     }
 
     private int? _requestedHashedCode;
+
     public override int GetHashCode()
     {
         if (!this.IsTransient())
@@ -55,6 +65,7 @@ public abstract class Entity
         else
             return base.GetHashCode();
     }
+
     public static bool operator ==(Entity? left, Entity? right)
     {
         if (left is null || right is null)
@@ -65,6 +76,7 @@ public abstract class Entity
     }
 
     public static bool operator !=(Entity? left, Entity? right) => !(left == right);
+
     public abstract class AuditableEntity : Entity
     {
         public int AddedBy { get; set; }
@@ -78,6 +90,7 @@ public abstract class Entity
             UpdatedOn = updatedOn;
         }
     }
+
     public abstract class VersionedEntity : AuditableEntity
     {
         public byte[]? TimeStamp { get; private set; }

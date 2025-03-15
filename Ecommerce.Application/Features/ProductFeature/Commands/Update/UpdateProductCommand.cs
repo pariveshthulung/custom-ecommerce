@@ -1,5 +1,4 @@
-using Ecommerce.Application.Common.Repository;
-using FluentValidation;
+using Ecommerce.Shared.Wrappers;
 
 namespace Ecommerce.Application.Features.ProductFeature.Commands.Update;
 
@@ -10,17 +9,16 @@ public class UpdateProductCommandValidation : AbstractValidator<UpdateProductCom
 {
     public UpdateProductCommandValidation(IProductRepository productRepository)
     {
-        RuleFor(x => x.ProductGuid)
-        .NotNull()
-        .NotEmpty()
-        .WithMessage("Invalid product.");
+        RuleFor(x => x.ProductGuid).NotNull().NotEmpty().WithMessage("Invalid product.");
 
         RuleFor(x => x.ProductGuid)
-        .MustAsync(async (guid, cancellationToken) =>
-        {
-            var product = await productRepository.GetByGuidAsync(guid, cancellationToken);
-            return product is null ? false : true;
-        })
-        .WithMessage("Invalid product.");
+            .MustAsync(
+                async (guid, cancellationToken) =>
+                {
+                    var product = await productRepository.GetByGuidAsync(guid, cancellationToken);
+                    return product is null ? false : true;
+                }
+            )
+            .WithMessage("Invalid product.");
     }
 }

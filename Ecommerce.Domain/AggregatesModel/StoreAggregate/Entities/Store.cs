@@ -6,8 +6,8 @@ public class Store : AuditableEntity, IAggregateRoot
     public string StoreName { get; set; } = default!;
     private List<Product> _products = [];
     public IReadOnlyCollection<Product> Products => _products.AsReadOnly();
-    private List<Administrator> _administrators = [];
-    public IReadOnlyCollection<Administrator> AdministratorsId => _administrators.AsReadOnly();
+    private List<long> _administratorsIds = [];
+    public IReadOnlyCollection<long> AdministratorsIds => _administratorsIds.AsReadOnly();
 
     private Store(int maxUser, string storeName)
     {
@@ -20,9 +20,9 @@ public class Store : AuditableEntity, IAggregateRoot
         return new Store(maxUser, storeName);
     }
 
-    public void AddAdminstrator(Administrator administrator)
+    public void AddAdminstrator(long administratorId)
     {
-        _administrators.Add(administrator);
+        _administratorsIds.Add(administratorId);
     }
 
     public void AddProduct(Product product) => _products.Add(product);

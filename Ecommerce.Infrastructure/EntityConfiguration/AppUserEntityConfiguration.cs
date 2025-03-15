@@ -1,14 +1,11 @@
-using Ecommerce.Domain.AggregatesModel.CustomerAggregate;
-using Ecommerce.Domain.Enumerations;
-
 namespace Ecommerce.Infrastructure.EntityConfiguration;
 
-public class CustomerEntityConfiguration : IEntityTypeConfiguration<Customer>
+public class AppUserEntityConfiguration : IEntityTypeConfiguration<AppUser>
 {
-    public void Configure(EntityTypeBuilder<Customer> builder)
+    public void Configure(EntityTypeBuilder<AppUser> builder)
     {
         builder.ToTable(
-            nameof(Customer).Pluralize().Pascalize(),
+            nameof(AppUser).Pluralize().Pascalize(),
             EcommerceDbContext.ECOMMERCE_SCHEMA
         );
         builder.Property(e => e.FirstName).IsRequired().HasMaxLength(255);
@@ -18,16 +15,17 @@ public class CustomerEntityConfiguration : IEntityTypeConfiguration<Customer>
         builder.Property(e => e.PhoneNo).IsRequired().HasMaxLength(255);
         builder.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255);
         builder
-            .HasOne<UserTypeEnum>()
+            .HasOne<RoleEnum>()
             .WithMany()
-            .HasForeignKey(e => e.UserTypeId)
+            .HasForeignKey(e => e.RoleId)
             .OnDelete(DeleteBehavior.NoAction)
             .IsRequired();
-        builder.HasOne(e => e.Cart).WithOne().HasForeignKey<Cart>(e => e.UserId).IsRequired();
+        builder.HasOne(e => e.Cart).WithOne().HasForeignKey<Cart>(e => e.AppUserId).IsRequired();
+        builder.HasOne<Store>().WithMany().HasForeignKey(e => e.StoreId);
         builder
             .HasMany(e => e.Orders)
             .WithOne()
-            .HasForeignKey(e => e.CustomerId)
+            .HasForeignKey(e => e.AppUserId)
             .OnDelete(DeleteBehavior.Cascade);
         builder.OwnsOne(
             e => e.Address,

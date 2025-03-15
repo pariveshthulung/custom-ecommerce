@@ -1,3 +1,5 @@
+using Ecommerce.Infrastructure.Services;
+
 namespace Ecommerce.Infrastructure.DependencyResolution;
 
 public static class DependencyExtension
@@ -23,14 +25,21 @@ public static class DependencyExtension
                 ),
             ServiceLifetime.Scoped
         );
+        services.AddHttpContextAccessor();
+        // services.AddLogging();
+        // services.AddSingleton<ILoggerFactory, LoggerFactory>();
+        // services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
         services
             .AddScoped<ICartRepository, CartRepository>()
             .AddScoped<ICategoryRepository, CategoryRepository>()
-            .AddScoped<ICustomerRepository, CustomerRepository>()
+            .AddScoped<IAppUserRepository, AppUserRepository>()
+            .AddScoped<IAppUserReadonlyRepository, AppUserReadonlyRepository>()
             .AddScoped<IOrderRepository, OrderRepository>()
             .AddScoped<IProductConfirmRepository, ProductConfirmRepository>()
             .AddScoped<IProductRepository, ProductRepository>()
-            .AddScoped<IStoreRepository, StoreRepository>();
+            .AddScoped<IStoreRepository, StoreRepository>()
+            .AddScoped<ITokenService, TokenService>()
+            .AddScoped<ICurrentUserService, CurrentUserService>();
 
         return services;
     }

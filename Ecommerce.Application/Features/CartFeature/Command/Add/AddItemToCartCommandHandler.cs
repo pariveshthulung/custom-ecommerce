@@ -1,28 +1,24 @@
-
-using Ecommerce.Application.Common.Repository;
-using Ecommerce.Shared.Helper;
+using Ecommerce.Shared.Wrappers;
 
 namespace Ecommerce.Application.Features.Carts.Command;
 
-public class AddItemToCartCommandHandler
-    : ICommandHandler<AddItemToCartCommand, BaseResult<Guid>>
+public class AddItemToCartCommandHandler(
+    ICartRepository cartRepository,
+    ICurrentUserService currentUserService
+) : ICommandHandler<AddItemToCartCommand, BaseResult<Guid>>
 {
-    private readonly ICartRepository _cartItemRepository;
-    private readonly ICurrentUserProvider _currentUserProvider;
-    public AddItemToCartCommandHandler(ICartRepository cartRepository, ICurrentUserProvider currentUserProvider)
-    {
-        _cartItemRepository = cartRepository;
-        _currentUserProvider = currentUserProvider;
-    }
     public async Task<BaseResult<Guid>> Handle(
-      AddItemToCartCommand request,
-      CancellationToken cancellationToken)
+        AddItemToCartCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        var currentUser = _currentUserProvider.GetCurrentUser();
-        var userCart = await _cartItemRepository.GetByUserIdAsync(currentUser.Id, cancellationToken);
+        var userCart = await cartRepository.GetByUserIdAsync(
+            currentUserService.UserId,
+            cancellationToken
+        );
         if (userCart == null)
         {
-            return await CreateNewCartAsync(currentUser.Id, request, cancellationToken);
+            return await CreateNewCartAsync(currentUserService.UserId, request, cancellationToken);
         }
 
         return await AddOrUpdateCartItemAsync(userCart, request, cancellationToken);
@@ -31,14 +27,15 @@ public class AddItemToCartCommandHandler
     private async Task<BaseResult<Guid>> CreateNewCartAsync(
         int userId,
         AddItemToCartCommand request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var newCart = Cart.Create(userId);
         var newCartItem = CartItem.Create(request.ProductId, request.Quantity);
 
         newCart.AddCartItem(newCartItem);
-        await _cartItemRepository.AddAsync(newCart, cancellationToken);
-        await _cartItemRepository.UnitOfWork.SaveEntitiesAsync();
+        await cartRepository.AddAsync(newCart, cancellationToken);
+        await cartRepository.UnitOfWork.SaveEntitiesAsync();
 
         return BaseResult<Guid>.Ok(newCartItem.Guid);
     }
@@ -46,16 +43,18 @@ public class AddItemToCartCommandHandler
     private async Task<BaseResult<Guid>> AddOrUpdateCartItemAsync(
         Cart userCart,
         AddItemToCartCommand request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
-        var existingCartItem = userCart.CartItems
-            .SingleOrDefault(item => item.ProductId == request.ProductId);
+        var existingCartItem = userCart.CartItems.SingleOrDefault(item =>
+            item.ProductId == request.ProductId
+        );
 
         if (existingCartItem != null)
         {
             existingCartItem.AddQuantity(request.Quantity);
-            await _cartItemRepository.UpdateAsync(userCart, cancellationToken);
-            await _cartItemRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            await cartRepository.UpdateAsync(userCart, cancellationToken);
+            await cartRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             return BaseResult<Guid>.Ok(existingCartItem.Guid);
         }
@@ -63,11 +62,10 @@ public class AddItemToCartCommandHandler
         {
             var newCartItem = CartItem.Create(request.ProductId, request.Quantity);
             userCart.AddCartItem(newCartItem);
-            await _cartItemRepository.UpdateAsync(userCart, cancellationToken);
-            await _cartItemRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            await cartRepository.UpdateAsync(userCart, cancellationToken);
+            await cartRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             return BaseResult<Guid>.Ok(newCartItem.Guid);
         }
     }
-
 }

@@ -19,6 +19,11 @@ public class CartRepository : ICartRepository
         throw new NotImplementedException();
     }
 
+    public Task<Cart?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<Cart> GetByGuidAsync(Guid orderGuid, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();

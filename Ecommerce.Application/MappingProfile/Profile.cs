@@ -1,3 +1,7 @@
 namespace Ecommerce.Application.MappingProfile;
-public class MappingProfile()
-    : BaseMappingProfile(typeof(MappingProfile).Assembly);
+
+public class MappingProfile : BaseMappingProfile
+{
+    public MappingProfile()
+        : base(typeof(MappingProfile).Assembly) { }
+}

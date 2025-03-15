@@ -8,11 +8,6 @@ public class StoreEntityConfiguration : IEntityTypeConfiguration<Store>
         builder.Property(x => x.MaxUser).IsRequired();
         builder.Property(x => x.StoreName).IsRequired();
         builder.HasMany(x => x.Products).WithOne().OnDelete(DeleteBehavior.Cascade);
-        builder
-            .HasMany(x => x.AdministratorsId)
-            .WithOne()
-            .HasForeignKey(e => e.StoreId)
-            .OnDelete(DeleteBehavior.Cascade);
         builder.Property(x => x.MaxUser).IsRequired();
     }
 }

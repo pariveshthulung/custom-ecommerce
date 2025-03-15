@@ -23,7 +23,6 @@ public class CreateCartItemDto
 {
     public int ProductId { get; set; }
     public int Quantity { get; set; }
-
 }
 
 public class UpdateCartDto
@@ -31,6 +30,7 @@ public class UpdateCartDto
     public int UserId { get; set; }
     public List<CartItemDto> CartItems { get; set; } = [];
 }
+
 public class UpdateCartItemDto
 {
     public Guid Guid { get; set; }

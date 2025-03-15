@@ -1,5 +1,5 @@
-using Ecommerce.Application.Common.Model;
+using Ecommerce.Shared.Wrappers;
 
 namespace Ecommerce.Application.Features.Carts.Query.Get;
 
-public record GetCartQuery() : IQuery<BaseResult<CartDto>>;
+public record GetCartQuery(Guid CartGuid) : IQuery<BaseResult<CartDto>>;

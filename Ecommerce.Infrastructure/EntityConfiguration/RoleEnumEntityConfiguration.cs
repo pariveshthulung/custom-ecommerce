@@ -1,13 +1,11 @@
-using Ecommerce.Domain.Enumerations;
-
 namespace Ecommerce.Infrastructure.EntityConfiguration;
 
-public class UserTypeEnumEntityConfiguration : IEntityTypeConfiguration<UserTypeEnum>
+public class RoleEnumEntityConfiguration : IEntityTypeConfiguration<RoleEnum>
 {
-    public void Configure(EntityTypeBuilder<UserTypeEnum> builder)
+    public void Configure(EntityTypeBuilder<RoleEnum> builder)
     {
         builder.ToTable(
-            nameof(UserTypeEnum).Pluralize().Pascalize(),
+            nameof(RoleEnum).Pluralize().Pascalize(),
             EcommerceDbContext.ECOMMERCE_SCHEMA
         );
         builder.HasKey(x => x.Id);

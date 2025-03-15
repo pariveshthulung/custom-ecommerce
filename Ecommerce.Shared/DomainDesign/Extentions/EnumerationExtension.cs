@@ -1,4 +1,5 @@
 namespace Ecommerce.Shared.DomainDesign.Extentions;
+
 public static class EnumerationExtension
 {
     public static T GetRandom<T>(this IEnumerable<T> enumeration)

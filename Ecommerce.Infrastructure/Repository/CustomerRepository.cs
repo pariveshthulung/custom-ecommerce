@@ -1,31 +1,72 @@
 namespace Ecommerce.Infrastructure.Repository;
 
-public class CustomerRepository : ICustomerRepository
+public class AppUserRepository(
+    ILogger<AppUserRepository> logger,
+    EcommerceDbContext ecommerceDbContext
+) : IAppUserRepository
 {
     public IUnitOfWork UnitOfWork => throw new NotImplementedException();
 
-    public Task<Customer> AddAsync(Customer customer, CancellationToken cancellationToken = default)
+    public Task<AppUser> AddAsync(AppUser customer, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public void Delete(Customer customer, CancellationToken cancellationToken = default)
+    public void Delete(AppUser customer, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Customer>> GetAllAsync(CancellationToken cancellationToken = default)
+    public Task<IEnumerable<AppUser>> GetAllAsync(CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Customer> GetByGuidAsync(Guid customerGuid, CancellationToken cancellationToken = default)
+    public async Task<AppUser?> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await ecommerceDbContext.AppUsers.FirstOrDefaultAsync(
+                x => x.Email == email,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error updating user.");
+            throw;
+        }
+    }
+
+    public Task<AppUser?> GetByGuidAsync(Guid customerGuid, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Customer> UpdateAsync(Customer customer, CancellationToken cancellationToken = default)
+    public Task<AppUser> UpdateAsync(AppUser customer, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
+    }
+}
+
+public class AppUserReadonlyRepository(
+    ILogger<AppUserReadonlyRepository> logger,
+    EcommerceDbContext ecommerceDbContext
+) : IAppUserReadonlyRepository
+{
+    public async Task<bool> ExistAsync(string email, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await ecommerceDbContext.AppUsers.AnyAsync(
+                u => u.Email == email,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error checking user");
+            throw;
+        }
     }
 }

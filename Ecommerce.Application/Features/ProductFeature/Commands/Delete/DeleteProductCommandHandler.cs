@@ -1,4 +1,4 @@
-using Ecommerce.Application.Common.Repository;
+using Ecommerce.Shared.Wrappers;
 
 namespace Ecommerce.Application.Features.ProductFeature.Commands.Delete;
 
@@ -10,9 +10,16 @@ public class DeleteProductCommandHandler : ICommandHandler<DeleteProductCommand,
     {
         _productRepository = productRepository;
     }
-    public async Task<BaseResult<Unit>> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+
+    public async Task<BaseResult<Unit>> Handle(
+        DeleteProductCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        var product = await _productRepository.GetByGuidAsync(request.ProductGuid, cancellationToken);
+        var product = await _productRepository.GetByGuidAsync(
+            request.ProductGuid,
+            cancellationToken
+        );
         _productRepository.Delete(product);
 
         await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);

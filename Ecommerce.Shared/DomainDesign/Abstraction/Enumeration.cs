@@ -10,6 +10,7 @@ public class Enumeration : IComparable
         Id = id;
         Name = name;
     }
+
     public override bool Equals(object? obj)
     {
         if (obj is not Enumeration other)
@@ -19,6 +20,7 @@ public class Enumeration : IComparable
 
         return typeMatch && valueMatch;
     }
+
     public override int GetHashCode() => Id.GetHashCode();
 
     public static bool operator ==(Enumeration left, Enumeration right)
@@ -32,20 +34,37 @@ public class Enumeration : IComparable
 
     public static bool operator !=(Enumeration left, Enumeration right) => !(left == right);
 
-    public static IEnumerable<T> GetAll<T>() where T : Enumeration =>
+    public static IEnumerable<T> GetAll<T>()
+        where T : Enumeration =>
         typeof(T)
             .GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly)
-            .Select(x => x.GetValue(null)).Cast<T>();
-    public static T FromName<T>(string name) where T : Enumeration => Parse<T, string>(name, "Name", item => item.Name == name);
-    public static T FromValue<T>(int id) where T : Enumeration => Parse<T, int>(id, "Value", item => item.Id == id);
-    public static T FromNameCaseInsensitive<T>(string name) where T : Enumeration => Parse<T, string>(name, "Name", item => item.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-    private static T Parse<T, K>(K value, string discription, Func<T, bool> predicate) where T : Enumeration
+            .Select(x => x.GetValue(null))
+            .Cast<T>();
+
+    public static T FromName<T>(string name)
+        where T : Enumeration => Parse<T, string>(name, "Name", item => item.Name == name);
+
+    public static T FromValue<T>(int id)
+        where T : Enumeration => Parse<T, int>(id, "Value", item => item.Id == id);
+
+    public static T FromNameCaseInsensitive<T>(string name)
+        where T : Enumeration =>
+        Parse<T, string>(
+            name,
+            "Name",
+            item => item.Name.Equals(name, StringComparison.OrdinalIgnoreCase)
+        );
+
+    private static T Parse<T, K>(K value, string discription, Func<T, bool> predicate)
+        where T : Enumeration
     {
         var matchingValue = GetAll<T>().FirstOrDefault(predicate);
-        return matchingValue != null ? matchingValue : throw new InvalidOperationException($"{value} is not a valid {discription} in {typeof(T)}");
-
-
+        return matchingValue != null
+            ? matchingValue
+            : throw new InvalidOperationException(
+                $"{value} is not a valid {discription} in {typeof(T)}"
+            );
     }
-    public int CompareTo(object? obj) => Id.CompareTo(((Enumeration)obj).Id);
 
+    public int CompareTo(object? obj) => Id.CompareTo(((Enumeration)obj).Id);
 }

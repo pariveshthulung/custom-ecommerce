@@ -32,7 +32,7 @@ public class EcommerceDbContextSeeder
                 if (settings.Value.EnableMigrationSeed)
                 {
                     // do migrations
-                    await _MigrateEnumeration(context, context.UserTypeEnums);
+                    await _MigrateEnumeration(context, context.RoleEnums);
                 }
             }
         });

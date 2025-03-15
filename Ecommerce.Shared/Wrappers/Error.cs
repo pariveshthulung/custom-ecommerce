@@ -1,16 +1,18 @@
-namespace Ecommerce.Application.Wrappers;
+namespace Ecommerce.Shared.Wrappers;
 
 public class Error
 {
     public int ErrorCode { get; set; }
     public string FieldName { get; set; } = default!;
     public string Description { get; set; } = default!;
+
     public Error(int errorCode, string fieldName, string description)
     {
         ErrorCode = errorCode;
         FieldName = fieldName;
         Description = description;
     }
+
     public override bool Equals(object? obj)
     {
         if (obj is null || obj is not Error other)
@@ -19,5 +21,6 @@ public class Error
             && FieldName == other.FieldName
             && Description == other.Description;
     }
+
     public override int GetHashCode() => HashCode.Combine(ErrorCode, FieldName, Description);
 }

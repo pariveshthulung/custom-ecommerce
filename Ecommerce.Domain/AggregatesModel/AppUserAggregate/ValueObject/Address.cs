@@ -1,4 +1,4 @@
-namespace Ecommerce.Domain.AggregatesModel.CustomerAggregate;
+namespace Ecommerce.Domain.AggregatesModel.AppUserAggregate;
 
 public class Address : ValueObject
 {

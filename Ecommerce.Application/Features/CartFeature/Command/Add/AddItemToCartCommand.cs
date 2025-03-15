@@ -1,5 +1,4 @@
-using Ecommerce.Application.Common.Repository;
-using FluentValidation;
+using Ecommerce.Shared.Wrappers;
 
 namespace Ecommerce.Application.Features.Carts.Command;
 
@@ -9,21 +8,17 @@ public class AddItemToCartCommandValidator : AbstractValidator<AddItemToCartComm
 {
     public AddItemToCartCommandValidator(IProductRepository productRepository)
     {
-        RuleFor(x => x.ProductId)
-        .NotNull()
-        .NotEmpty()
-        .WithMessage("Invalid Product");
+        RuleFor(x => x.ProductId).NotNull().NotEmpty().WithMessage("Invalid Product");
 
         RuleFor(x => x.ProductId)
-        .MustAsync(async (id, CancellationToken) =>
-        {
-            return await productRepository.ExistAsync(id, CancellationToken);
-        })
-        .WithMessage("Invalid Product");
+            .MustAsync(
+                async (id, CancellationToken) =>
+                {
+                    return await productRepository.ExistAsync(id, CancellationToken);
+                }
+            )
+            .WithMessage("Invalid Product");
 
-        RuleFor(x => x.Quantity)
-        .NotNull()
-        .NotEmpty()
-        .WithMessage("Invalid Quantity");
+        RuleFor(x => x.Quantity).NotNull().NotEmpty().WithMessage("Invalid Quantity");
     }
 }

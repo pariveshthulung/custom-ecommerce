@@ -13,6 +13,6 @@ public class CartEntityConfiguration : IEntityTypeConfiguration<Cart>
             .WithOne()
             .HasForeignKey(e => e.CartId)
             .OnDelete(DeleteBehavior.Cascade);
-        builder.Property(e => e.UserId).IsRequired();
+        builder.Property(e => e.AppUserId).IsRequired();
     }
 }

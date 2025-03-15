@@ -1,19 +1,23 @@
-using Ecommerce.Application.Common.Repository;
-using Ecommerce.Shared.Helper;
-using Microsoft.Extensions.Logging;
+using Ecommerce.Shared.Wrappers;
 
 namespace Ecommerce.Application.Features.Carts.Command.ToggleCheck;
-public class ToggleCheckCommandHandler(ICartRepository cartRepository,
-ICurrentUserProvider currentUserProvider,
-ILogger<ToggleCheckCommandHandler> logger)
-    : ICommandHandler<ToggleCheckCommand, BaseResult<Guid>>
+
+public class ToggleCheckCommandHandler(
+    ICartRepository cartRepository,
+    ICurrentUserService currentUserService,
+    ILogger<ToggleCheckCommandHandler> logger
+) : ICommandHandler<ToggleCheckCommand, BaseResult<Guid>>
 {
-    public async Task<BaseResult<Guid>> Handle(ToggleCheckCommand request, CancellationToken cancellationToken)
+    public async Task<BaseResult<Guid>> Handle(
+        ToggleCheckCommand request,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
-            var currentUser = await currentUserProvider.GetCurrentUser();
-            var cart = (await cartRepository.GetAllAsync(cancellationToken)).FirstOrDefault(x => x.UserId == currentUser.Id);
+            var cart = (await cartRepository.GetAllAsync(cancellationToken)).FirstOrDefault(x =>
+                x.AppUserId == currentUserService.UserId
+            );
             var item = cart?.CartItems.FirstOrDefault(x => x.Guid == request.CartItemGuid);
             item?.ModifyIsChecked(request.IsChecked);
             await cartRepository.UpdateAsync(cart!, cancellationToken);
@@ -25,6 +29,5 @@ ILogger<ToggleCheckCommandHandler> logger)
             logger.LogError(ex, "Error toggling IsChecked property.");
             throw;
         }
-
     }
 }

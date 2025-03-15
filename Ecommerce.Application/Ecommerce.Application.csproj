@@ -24,4 +24,9 @@
     <Folder Include="Features/ProductItemFeature/Queries/" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.0" />
+  </ItemGroup>
+
 </Project>

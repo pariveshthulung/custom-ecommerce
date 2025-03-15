@@ -22,6 +22,105 @@ namespace Ecommerce.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities.AppUser", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPasswordExpire")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PhoneNo")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("StoreId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("StoreId");
+
+                    b.ToTable("AppUsers", "ecom");
+                });
+
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.Cart", b =>
                 {
                     b.Property<long>("Id")
@@ -35,6 +134,9 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<long>("AppUserId")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
@@ -51,12 +153,9 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("AppUserId")
                         .IsUnique();
 
                     b.ToTable("Carts", "ecom");
@@ -199,70 +298,6 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.ToTable("InvarientOptions", "ecom");
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CustomerAggregate.Entities.Customer", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<int>("AddedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("AddedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("PhoneNo")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserTypeId");
-
-                    b.ToTable("Customers", "ecom");
-                });
-
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.OrderAggregate.Entities.Order", b =>
                 {
                     b.Property<long>("Id")
@@ -271,7 +306,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("CustomerId")
+                    b.Property<long>("AppUserId")
                         .HasColumnType("bigint");
 
                     b.Property<Guid>("Guid")
@@ -297,7 +332,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Orders", "ecom");
                 });
@@ -489,51 +524,6 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.ToTable("ProductConfirms", "ecom");
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.StoreAggregate.Entities.Administrator", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<int>("AddedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("AddedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("StoreId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StoreId");
-
-                    b.ToTable("Administrators", "ecom");
-                });
-
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.StoreAggregate.Entities.Store", b =>
                 {
                     b.Property<long>("Id")
@@ -575,7 +565,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.ToTable("Stores", "ecom");
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.Enumerations.UserTypeEnum", b =>
+            modelBuilder.Entity("Ecommerce.Domain.Enumerations.RoleEnum", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -587,14 +577,271 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserTypeEnums", "ecom");
+                    b.ToTable("RoleEnums", "ecom");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities.AppUser", b =>
+                {
+                    b.HasOne("Ecommerce.Domain.Enumerations.RoleEnum", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Ecommerce.Domain.AggregatesModel.StoreAggregate.Entities.Store", null)
+                        .WithMany()
+                        .HasForeignKey("StoreId");
+
+                    b.OwnsOne("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Address", "Address", b1 =>
+                        {
+                            b1.Property<long>("AppUserId")
+                                .HasColumnType("bigint");
+
+                            b1.Property<string>("AddressLine")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("Customer_AddressLine");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("Customer_City");
+
+                            b1.Property<bool>("IsDefault")
+                                .HasColumnType("bit")
+                                .HasColumnName("Customer_IsDefault");
+
+                            b1.Property<string>("PostalCode")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Customer_PostalCode");
+
+                            b1.Property<string>("Region")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Customer_Region");
+
+                            b1.Property<int>("StreetNo")
+                                .HasColumnType("int")
+                                .HasColumnName("Customer_StreetNo");
+
+                            b1.HasKey("AppUserId");
+
+                            b1.ToTable("AppUsers", "ecom");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AppUserId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.Cart", b =>
                 {
-                    b.HasOne("Ecommerce.Domain.AggregatesModel.CustomerAggregate.Entities.Customer", null)
+                    b.HasOne("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities.AppUser", null)
                         .WithOne("Cart")
-                        .HasForeignKey("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.Cart", "UserId")
+                        .HasForeignKey("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.Cart", "AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -634,66 +881,11 @@ namespace Ecommerce.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CustomerAggregate.Entities.Customer", b =>
-                {
-                    b.HasOne("Ecommerce.Domain.Enumerations.UserTypeEnum", null)
-                        .WithMany()
-                        .HasForeignKey("UserTypeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.OwnsOne("Ecommerce.Domain.AggregatesModel.CustomerAggregate.Address", "Address", b1 =>
-                        {
-                            b1.Property<long>("CustomerId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<string>("AddressLine")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)")
-                                .HasColumnName("Customer_AddressLine");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)")
-                                .HasColumnName("Customer_City");
-
-                            b1.Property<bool>("IsDefault")
-                                .HasColumnType("bit")
-                                .HasColumnName("Customer_IsDefault");
-
-                            b1.Property<string>("PostalCode")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Customer_PostalCode");
-
-                            b1.Property<string>("Region")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Customer_Region");
-
-                            b1.Property<int>("StreetNo")
-                                .HasColumnType("int")
-                                .HasColumnName("Customer_StreetNo");
-
-                            b1.HasKey("CustomerId");
-
-                            b1.ToTable("Customers", "ecom");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CustomerId");
-                        });
-
-                    b.Navigation("Address")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.OrderAggregate.Entities.Order", b =>
                 {
-                    b.HasOne("Ecommerce.Domain.AggregatesModel.CustomerAggregate.Entities.Customer", null)
+                    b.HasOne("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities.AppUser", null)
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -733,13 +925,63 @@ namespace Ecommerce.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.StoreAggregate.Entities.Administrator", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Ecommerce.Domain.AggregatesModel.StoreAggregate.Entities.Store", null)
-                        .WithMany("AdministratorsId")
-                        .HasForeignKey("StoreId")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities.AppUser", b =>
+                {
+                    b.Navigation("Cart")
+                        .IsRequired();
+
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.Cart", b =>
@@ -755,14 +997,6 @@ namespace Ecommerce.Infrastructure.Migrations
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CategoryAggregate.Entities.Invarient", b =>
                 {
                     b.Navigation("InvarientOptions");
-                });
-
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CustomerAggregate.Entities.Customer", b =>
-                {
-                    b.Navigation("Cart")
-                        .IsRequired();
-
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.OrderAggregate.Entities.Order", b =>
@@ -781,8 +1015,6 @@ namespace Ecommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.StoreAggregate.Entities.Store", b =>
                 {
-                    b.Navigation("AdministratorsId");
-
                     b.Navigation("Products");
                 });
 #pragma warning restore 612, 618

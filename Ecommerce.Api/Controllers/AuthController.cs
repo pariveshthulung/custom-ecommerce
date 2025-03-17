@@ -27,7 +27,7 @@ public class AuthController(
     {
         try
         {
-            var command = Mapper.Map<LoginCommand>(loginDto);
+            var command = Mapper.Map<LoginCommand.Command>(loginDto);
             var response = await Sender.Send(command, cancellationToken);
             return response.Success ? Ok(response) : response.ToProblemDetail();
         }
@@ -58,7 +58,7 @@ public class AuthController(
     {
         try
         {
-            var command = Mapper.Map<RegisterCommand>(registerDto);
+            var command = Mapper.Map<RegisterCommand.Command>(registerDto);
             var response = await Sender.Send(command, cancellationToken);
             return response.Success ? Created() : response.ToProblemDetail();
         }

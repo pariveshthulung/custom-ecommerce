@@ -1,12 +1,12 @@
 namespace Ecommerce.Application.Features.SeederFeature;
 
-public static class SeedAdministrator
+public static class SeedRoleCommand
 {
     public record Command() : ICommand<BaseResult<Response>>;
 
     public record Response(int Id);
 
-    public class SeedAdministratorHandler(ISeederRepository seederRepository)
+    public class SeedRoleHandler(ISeederRepository seederRepository)
         : ICommandHandler<Command, BaseResult<Response>>
     {
         public async Task<BaseResult<Response>> Handle(
@@ -16,7 +16,7 @@ public static class SeedAdministrator
         {
             try
             {
-                var response = await seederRepository.SeedAdministrator();
+                var response = await seederRepository.SeedRole();
                 return BaseResult<Response>.Ok(new Response(response));
             }
             catch (Exception ex)

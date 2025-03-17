@@ -9,15 +9,15 @@ public class Store : AuditableEntity, IAggregateRoot
     private List<long> _administratorsIds = [];
     public IReadOnlyCollection<long> AdministratorsIds => _administratorsIds.AsReadOnly();
 
-    private Store(int maxUser, string storeName)
+    private Store(string storeName)
     {
-        MaxUser = maxUser;
+        MaxUser = 3;
         StoreName = storeName;
     }
 
-    public static Store Create(int maxUser, string storeName)
+    public static Store Create(string storeName)
     {
-        return new Store(maxUser, storeName);
+        return new Store(storeName);
     }
 
     public void AddAdminstrator(long administratorId)

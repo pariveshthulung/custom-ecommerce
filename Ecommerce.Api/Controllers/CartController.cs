@@ -1,3 +1,5 @@
+using Ecommerce.Application.Features.CartFeature.Query;
+
 namespace Ecommerce.Api.Controllers;
 
 public class CartController(IMapper mapper, ISender sender, ILogger<CartController> logger)
@@ -22,7 +24,7 @@ public class CartController(IMapper mapper, ISender sender, ILogger<CartControll
     {
         try
         {
-            var query = new GetCartQuery(cartGuid);
+            var query = new GetCartQuery.Query(cartGuid);
             var response = await Sender.Send(query, cancellationToken);
             return response is null ? NotFound() : Ok(response);
         }

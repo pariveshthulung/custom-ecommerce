@@ -1,3 +1,5 @@
+using Ecommerce.Application.Features.SeederFeature;
+
 namespace Ecommerce.Api.Controllers;
 
 public class SeederController(
@@ -25,7 +27,7 @@ public class SeederController(
     {
         try
         {
-            var response = await Sender.Send(new SeedRole.Command(), cancellationToken);
+            var response = await Sender.Send(new SeedRoleCommand.Command(), cancellationToken);
             return response.Success ? Ok(response) : response.ToProblemDetail();
         }
         catch (Exception ex)
@@ -52,7 +54,10 @@ public class SeederController(
     {
         try
         {
-            var response = await Sender.Send(new SeedAdministrator.Command(), cancellationToken);
+            var response = await Sender.Send(
+                new SeedAdministratorCommand.Command(),
+                cancellationToken
+            );
             return response.Success ? Ok(response) : response.ToProblemDetail();
         }
         catch (Exception ex)

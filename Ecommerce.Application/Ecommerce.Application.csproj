@@ -14,13 +14,8 @@
     <Folder Include="ApplicationEvents/" />
     <Folder Include="Features/CategoryFeature/" />
     <Folder Include="Features/CategoryFeature/Commands/" />
-    <Folder Include="Features/CategoryFeature/Commands/Add/" />
-    <Folder Include="Features/CategoryFeature/Commands/Delete/" />
-    <Folder Include="Features/CategoryFeature/Commands/Update/" />
     <Folder Include="Features/CategoryFeature/Queries/" />
     <Folder Include="Features/ProductFeature/Queries/" />
-    <Folder Include="Features/ProductFeature/Queries/Get/" />
-    <Folder Include="Features/ProductFeature/Queries/GetAll/" />
     <Folder Include="Features/ProductItemFeature/Queries/" />
   </ItemGroup>
 

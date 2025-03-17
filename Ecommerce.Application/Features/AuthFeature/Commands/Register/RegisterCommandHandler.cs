@@ -1,11 +1,8 @@
-using Ecommerce.Shared.Wrappers;
-
 namespace Ecommerce.Application.Features.AuthFeature.Commands.Register;
 
 public class RegisterCommandHandler(
     // Logger<RegisterCommandHandler> logger,
     IAppUserReadonlyRepository appUserReadonlyRepository,
-    IAppUserRepository appUserRepository,
     UserManager<AppUser> userManager
 ) : ICommandHandler<RegisterCommand, BaseResult<Response>>
 {
@@ -20,7 +17,6 @@ public class RegisterCommandHandler(
                 request.Email,
                 cancellationToken
             );
-            using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             var appUser = AppUser.Create(
                 request.FirstName,
                 request.LastName,
@@ -38,10 +34,6 @@ public class RegisterCommandHandler(
                     .ToList();
                 return BaseResult<Response>.Failure(errors);
             }
-
-            await appUserRepository.AddAsync(appUser, cancellationToken);
-
-            transaction.Complete();
 
             return BaseResult<Response>.Ok(new Response(appUser.Id));
         }

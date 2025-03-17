@@ -31,23 +31,15 @@ public class AppUserEntityConfiguration : IEntityTypeConfiguration<AppUser>
             e => e.Address,
             address =>
             {
-                address
-                    .Property(e => e.City)
-                    .HasColumnName("Customer_City")
-                    .HasMaxLength(100)
-                    .IsRequired();
+                address.Property(e => e.City).HasColumnName("Customer_City").HasMaxLength(100);
                 address
                     .Property(e => e.AddressLine)
                     .HasColumnName("Customer_AddressLine")
-                    .HasMaxLength(200)
-                    .IsRequired();
-                address.Property(e => e.StreetNo).HasColumnName("Customer_StreetNo").IsRequired();
-                address
-                    .Property(e => e.PostalCode)
-                    .HasColumnName("Customer_PostalCode")
-                    .IsRequired();
-                address.Property(e => e.Region).HasColumnName("Customer_Region").IsRequired();
-                address.Property(e => e.IsDefault).HasColumnName("Customer_IsDefault").IsRequired();
+                    .HasMaxLength(200);
+                address.Property(e => e.StreetNo).HasColumnName("Customer_StreetNo");
+                address.Property(e => e.PostalCode).HasColumnName("Customer_PostalCode");
+                address.Property(e => e.Region).HasColumnName("Customer_Region");
+                address.Property(e => e.IsDefault).HasColumnName("Customer_IsDefault");
             }
         );
     }

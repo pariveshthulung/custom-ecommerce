@@ -1,6 +1,5 @@
 using System.Reflection;
 using Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities;
-using Ecommerce.Domain.Enumerations;
 using Ecommerce.Infrastructure.Data;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -36,20 +35,21 @@ public static class DependencyExtension
                 options.GroupNameFormat = "'v'V";
                 options.SubstituteApiVersionInUrl = true;
             });
-
+        services.AddScoped<PasswordHasher<AppUser>>();
         services
             .AddIdentity<AppUser, IdentityRole<long>>()
             .AddEntityFrameworkStores<EcommerceDbContext>()
             .AddDefaultTokenProviders();
 
         var assembly = typeof(DependencyExtension).Assembly;
-        // services.AddMediatR(_ => _.RegisterServicesFromAssemblies(assembly));
         services.AddMediatR(cfg =>
             // cfg.RegisterServicesFromAssembly(typeof(ServiceRegistration).Assembly)
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()) //try
         );
         services.AddAutoMapper(assembly);
-        services.AddValidatorsFromAssembly(assembly);
+        // services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
         // services.AddLogging();
         // services.AddSingleton<ILoggerFactory, LoggerFactory>();
         // services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));

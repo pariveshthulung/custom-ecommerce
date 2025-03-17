@@ -1,4 +1,5 @@
 using System.Reflection;
+using FluentValidation.AspNetCore;
 
 namespace Ecommerce.Application.DependencyResolution;
 
@@ -14,7 +15,9 @@ public static class DependencyExtension
         );
         services.AddAutoMapper(assembly);
         //add validation
-        services.AddValidatorsFromAssembly(assembly);
+
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
         // services.AddLogging();
         // services.AddSingleton<ILoggerFactory, LoggerFactory>();
         // services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));

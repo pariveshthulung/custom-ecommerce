@@ -1,7 +1,9 @@
+global using System.Data;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Text;
+global using Dapper;
 global using Ecommerce.Application.Common.Repository;
 global using Ecommerce.Application.Common.Services;
 global using Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities;

@@ -14,7 +14,7 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
     public bool IsActive { get; set; }
     public long? StoreId { get; set; }
     public Cart Cart { get; private set; } = default!;
-    public Address Address { get; private set; } = default!;
+    public Address? Address { get; private set; } = default!;
     private IList<Order> _orders = [];
     public IReadOnlyCollection<Order> Orders => _orders.AsReadOnly();
 
@@ -25,6 +25,7 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
         Email = email;
         PhoneNo = phoneNo;
         RoleId = roleId;
+        UserName = firstName + lastName;
     }
 
     public static AppUser Create(

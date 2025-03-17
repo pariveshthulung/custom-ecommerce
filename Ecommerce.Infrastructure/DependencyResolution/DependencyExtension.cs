@@ -1,4 +1,8 @@
+using System.Data;
+using System.Reflection;
 using Ecommerce.Infrastructure.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace Ecommerce.Infrastructure.DependencyResolution;
 
@@ -25,6 +29,9 @@ public static class DependencyExtension
                 ),
             ServiceLifetime.Scoped
         );
+        services.AddScoped<IDbConnection>(sp => new SqlConnection(
+            configuration.GetConnectionString("EcommerceDbContext")
+        ));
         services.AddHttpContextAccessor();
         // services.AddLogging();
         // services.AddSingleton<ILoggerFactory, LoggerFactory>();
@@ -39,7 +46,8 @@ public static class DependencyExtension
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IStoreRepository, StoreRepository>()
             .AddScoped<ITokenService, TokenService>()
-            .AddScoped<ICurrentUserService, CurrentUserService>();
+            .AddScoped<ICurrentUserService, CurrentUserService>()
+            .AddScoped<ISeederRepository, SeederRepository>();
 
         return services;
     }

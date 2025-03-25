@@ -11,5 +11,6 @@ public class EcommerceControllerBase(IMapper mapper, ISender sender) : Controlle
     protected readonly ISender Sender = sender;
     protected string UserEmail => User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
     protected string Role => User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
-    protected string UserId => User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+    protected long AppUserId =>
+        long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty);
 }

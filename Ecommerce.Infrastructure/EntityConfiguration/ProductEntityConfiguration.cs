@@ -21,6 +21,11 @@ public class ProductEntityConfiguration : IEntityTypeConfiguration<Product>
             .WithOne()
             .HasForeignKey(bt => bt.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
-        builder.HasMany(bt => bt.Categories).WithOne().OnDelete(DeleteBehavior.NoAction);
+        builder
+            .Property(c => c.CategoriesId)
+            .HasConversion(
+                v => string.Join(",", v), // Convert List<long> to a comma-separated string for storage
+                v => v.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(long.Parse).ToList() // Convert string back to List<long>
+            );
     }
 }

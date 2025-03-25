@@ -13,4 +13,5 @@ public interface IAppUserRepository : IRepository<AppUser>
 public interface IAppUserReadonlyRepository : IReadOnlyRepository<AppUser>
 {
     Task<bool> ExistAsync(string email, CancellationToken cancellationToken);
+    Task<bool> StoreExistAsync(long appUserId, CancellationToken cancellationToken);
 }

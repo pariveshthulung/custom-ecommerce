@@ -1,8 +1,4 @@
-using System.Data;
-using System.Reflection;
 using Ecommerce.Infrastructure.Services;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 
 namespace Ecommerce.Infrastructure.DependencyResolution;
 
@@ -14,8 +10,8 @@ public static class DependencyExtension
         IConfiguration configuration
     )
     {
-        services.Configure<EcommerceInfrastructureSetting>(
-            configuration.GetSection("EcommerceInfrastructureSetting:Infrastructure")
+        services.Configure<EcommerceInfrastructureSettings>(
+            configuration.GetSection("EcommerceInfrastructureSettings")
         );
         // services.AddDbContext<EcommerceDbContext>(options =>
         //     options.UseSqlServer(configuration.GetConnectionString("EcommerceDbContext"))
@@ -47,7 +43,9 @@ public static class DependencyExtension
             .AddScoped<IStoreRepository, StoreRepository>()
             .AddScoped<ITokenService, TokenService>()
             .AddScoped<ICurrentUserService, CurrentUserService>()
-            .AddScoped<ISeederRepository, SeederRepository>();
+            .AddScoped<ISeederRepository, SeederRepository>()
+            .AddScoped<IReadonlyStoreRepository, ReadonlyStoreRepository>()
+            .AddScoped<ILogRepository, LogRepository>();
 
         return services;
     }

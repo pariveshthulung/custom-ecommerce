@@ -7,7 +7,7 @@ public interface ICartRepository : IRepository<Cart>
         CancellationToken cancellationToken = default(CancellationToken)
     );
     Task<Cart> GetByUserIdAsync(
-        int id,
+        long id,
         CancellationToken cancellationToken = default(CancellationToken)
     );
     Task<Cart?> GetByEmailAsync(

@@ -11,7 +11,7 @@ public class Cart : AuditableEntity, IAggregateRoot
         AppUserId = appUserId;
     }
 
-    public static Cart Create(int AppUserId) => new(AppUserId);
+    public static Cart Create(long AppUserId) => new(AppUserId);
 
     public void AddCartItem(CartItem cartItem) => _cartItem.Add(cartItem);
 

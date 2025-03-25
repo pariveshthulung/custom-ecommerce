@@ -9,6 +9,8 @@ public abstract class Entity
     protected Entity()
     {
         Guid = Guid.NewGuid();
+        IsActive = true;
+        IsDeleted = false;
     }
 
     public void ModifyIsDeleted(bool value) => IsDeleted = value;
@@ -22,6 +24,8 @@ public abstract class Entity
         protected set { _id = value; }
     }
 
+    // If Id == 0, it returns true, meaning the object is new and not yet stored.
+    // If Id > 0, it returns false, meaning the object has been persisted.
     public bool IsTransient() => this.Id == default(Int32);
 
     private List<INotification> _domainEvent = [];
@@ -79,9 +83,9 @@ public abstract class Entity
 
     public abstract class AuditableEntity : Entity
     {
-        public int AddedBy { get; set; }
+        public long AddedBy { get; set; }
         public DateTime AddedOn { get; set; }
-        public int? UpdatedBy { get; set; }
+        public long? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
         public virtual void MarkEdited(int updatedBy, DateTime updatedOn)

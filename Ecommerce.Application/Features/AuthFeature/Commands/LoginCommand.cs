@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Ecommerce.Application.Features.AuthFeature.Commands;
 
 public static class LoginCommand
@@ -75,6 +77,9 @@ public static class LoginCommand
     #endregion
 
     #region Response
-    public record Response(string accessToken, string refershToken);
+    public record Response(string accessToken, string refershToken)
+    {
+        public static object Cookies { get; internal set; }
+    }
     #endregion
 }

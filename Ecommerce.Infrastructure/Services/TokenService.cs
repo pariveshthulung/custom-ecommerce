@@ -15,7 +15,7 @@ public class TokenService(ILogger<TokenService> logger, IConfiguration configura
             {
                 new(ClaimTypes.Email, user.Email ?? ""),
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new("StoreId", user.StoreId.ToString() ?? ""),
+                new("StoreGuid", user.StoreGuid.ToString() ?? ""),
                 new(ClaimTypes.Role, Enumeration.FromValue<RoleEnum>(user.RoleId).Name),
             };
             var tokenDiscriptor = new SecurityTokenDescriptor

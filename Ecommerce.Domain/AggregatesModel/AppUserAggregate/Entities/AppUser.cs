@@ -1,22 +1,23 @@
 namespace Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities;
 
+//need to inherite from enitity class so  it can add domain event
 public class AppUser : IdentityUser<long>, IAggregateRoot
 {
     public string FirstName { get; private set; } = default!;
     public string LastName { get; private set; } = default!;
     public string FullName => $"{FirstName} {LastName}";
     public string PhoneNo { get; private set; } = default!;
-    public string? RefreshToken { get; set; }
-    public DateTime? RefreshTokenExpiryTime { get; set; }
-    public bool IsPasswordExpire { get; set; }
-    public bool IsDeleted { get; set; }
-    public int RoleId { get; set; }
-    public bool IsActive { get; set; }
-    public long? StoreId { get; set; }
-    public Cart Cart { get; private set; } = default!;
+    public string? RefreshToken { get; private set; }
+    public DateTime? RefreshTokenExpiryTime { get; private set; }
+    public bool IsPasswordExpire { get; private set; }
+    public bool IsDeleted { get; private set; }
+    public int RoleId { get; private set; }
+    public bool IsActive { get; private set; }
+    public Guid? StoreGuid { get; private set; }
+    public long? CartId { get; private set; } = default!;
     public Address? Address { get; private set; } = default!;
-    private IList<Order> _orders = [];
-    public IReadOnlyCollection<Order> Orders => _orders.AsReadOnly();
+    private IList<long> _ordersId = [];
+    public IReadOnlyCollection<long> OrdersId => _ordersId.AsReadOnly();
 
     private AppUser(string firstName, string lastName, string email, string phoneNo, int roleId)
     {
@@ -36,5 +37,5 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
         int roleId
     ) => new(firstName, lastName, email, phoneNo, roleId);
 
-    public void AddOrder(Order order) => _orders.Add(order);
+    public void UpdateStoreId(Guid storeGuid) => StoreGuid = storeGuid;
 }

@@ -2,7 +2,7 @@ namespace Ecommerce.Application.Common.Services;
 
 public interface ICurrentUserService
 {
-    int UserId { get; }
+    long UserId { get; }
     string UserEmail { get; }
     string? StoreId { get; }
     string UserRole { get; }

@@ -8,8 +8,8 @@ public class Product : AuditableEntity, IAggregateRoot
     public IReadOnlyCollection<ProductImage> ProductImages => _productImages.AsReadOnly();
     private List<ProductItem> _productItems = [];
     public IReadOnlyCollection<ProductItem> ProductItems => _productItems.AsReadOnly();
-    private List<Category> _categories = [];
-    public IReadOnlyCollection<Category> Categories => _categories.AsReadOnly();
+    private List<long> _categoriesId = [];
+    public IReadOnlyCollection<long> CategoriesId => _categoriesId.AsReadOnly();
 
     private Product(string name, string description)
     {
@@ -34,9 +34,9 @@ public class Product : AuditableEntity, IAggregateRoot
 
     public void RemoveProductItem(ProductItem productItem) => _productItems.Remove(productItem);
 
-    public void AddCategory(Category category)
-    {
-        if (!_categories.Contains(category))
-            _categories.Add(category);
-    }
+    // public void AddCategory(Category category)
+    // {
+    //     if (!_categories.Contains(category))
+    //         _categories.Add(category);
+    // }
 }

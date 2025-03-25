@@ -5,7 +5,7 @@ public class EcommerceDbContextSeeder
     public async Task SeedAsync(
         EcommerceDbContext context,
         IWebHostEnvironment evn,
-        IOptions<EcommerceInfrastructureSetting> settings,
+        IOptions<EcommerceInfrastructureSettings> settings,
         ILogger<EcommerceDbContextSeeder> logger
     )
     {
@@ -33,6 +33,7 @@ public class EcommerceDbContextSeeder
                 {
                     // do migrations
                     await _MigrateEnumeration(context, context.RoleEnums);
+                    await _MigrateEnumeration(context, context.EventTypes);
                 }
             }
         });

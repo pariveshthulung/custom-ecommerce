@@ -9,6 +9,8 @@ global using Ecommerce.Application.Common.Services;
 global using Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities;
 global using Ecommerce.Domain.AggregatesModel.CartAggregate.Entities;
 global using Ecommerce.Domain.AggregatesModel.CategoryAggregate.Entities;
+global using Ecommerce.Domain.AggregatesModel.EventAggregate.Entities;
+global using Ecommerce.Domain.AggregatesModel.EventAggregate.Enumerations;
 global using Ecommerce.Domain.AggregatesModel.OrderAggregate.Entities;
 global using Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities;
 global using Ecommerce.Domain.AggregatesModel.ProductConfirmAggregate.Entities;

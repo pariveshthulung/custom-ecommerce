@@ -2,8 +2,10 @@ namespace Ecommerce.Infrastructure.Services;
 
 public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
 {
-    public int UserId =>
-        int.Parse(httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    public long UserId =>
+        long.Parse(
+            httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)!
+        );
 
     public string UserEmail =>
         httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email)!;

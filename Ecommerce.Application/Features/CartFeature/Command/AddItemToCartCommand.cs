@@ -53,7 +53,7 @@ public static class AddItemToCartCommand
         }
 
         private async Task<BaseResult<Guid>> CreateNewCartAsync(
-            int userId,
+            long userId,
             Command request,
             CancellationToken cancellationToken
         )

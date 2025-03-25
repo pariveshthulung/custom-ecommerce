@@ -20,13 +20,15 @@ public class AppUserEntityConfiguration : IEntityTypeConfiguration<AppUser>
             .HasForeignKey(e => e.RoleId)
             .OnDelete(DeleteBehavior.NoAction)
             .IsRequired();
-        builder.HasOne(e => e.Cart).WithOne().HasForeignKey<Cart>(e => e.AppUserId).IsRequired();
-        builder.HasOne<Store>().WithMany().HasForeignKey(e => e.StoreId);
+        builder.HasOne<Cart>().WithOne().HasForeignKey<AppUser>(e => e.CartId);
+
+        // builder.HasOne<Store>().WithMany().HasForeignKey(e => e.StoreGuid);
         builder
-            .HasMany(e => e.Orders)
-            .WithOne()
-            .HasForeignKey(e => e.AppUserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .Property(c => c.OrdersId)
+            .HasConversion(
+                v => string.Join(",", v), // Convert List<long> to a comma-separated string for storage
+                v => v.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(long.Parse).ToList() // Convert string back to List<long>
+            );
         builder.OwnsOne(
             e => e.Address,
             address =>

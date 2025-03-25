@@ -1,7 +1,6 @@
-using Ecommerce.Shared.Extension;
-
 namespace Ecommerce.Api.Controllers;
 
+[ApiController]
 public class AuthController(
     ISender sender,
     // ILogger<AuthController> logger,
@@ -29,6 +28,17 @@ public class AuthController(
         {
             var command = Mapper.Map<LoginCommand.Command>(loginDto);
             var response = await Sender.Send(command, cancellationToken);
+            Response.Cookies.Append(
+                "authToken",
+                response.Data.accessToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddHours(1)
+                }
+            );
             return response.Success ? Ok(response) : response.ToProblemDetail();
         }
         catch (Exception ex)

@@ -69,4 +69,17 @@ public class AppUserReadonlyRepository(
             throw;
         }
     }
+
+    public async Task<bool> StoreExistAsync(long appUserId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await ecommerceDbContext.AppUsers.AnyAsync(x => x.StoreGuid != null);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error checking store exist.");
+            throw;
+        }
+    }
 }

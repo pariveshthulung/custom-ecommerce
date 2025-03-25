@@ -29,7 +29,7 @@ public class CartRepository : ICartRepository
         throw new NotImplementedException();
     }
 
-    public Task<Cart> GetByUserIdAsync(int userId, CancellationToken cancellationToken = default)
+    public Task<Cart> GetByUserIdAsync(long userId, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

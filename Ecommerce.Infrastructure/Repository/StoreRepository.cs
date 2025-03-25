@@ -1,29 +1,85 @@
 namespace Ecommerce.Infrastructure.Repository;
 
-public class StoreRepository : IStoreRepository
+public class StoreRepository(EcommerceDbContext context) : IStoreRepository
 {
-    public Task<Store> AddAsync(Store store, CancellationToken cancellationToken = default)
+    public IUnitOfWork UnitOfWork => context;
+
+    public async Task<Store> AddAsync(Store store, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var entity = await context.Stores.AddAsync(store, cancellationToken);
+            return entity.Entity;
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
 
-    public void Delete(Store store, CancellationToken cancellationToken = default)
+    public void Delete(Store store)
     {
-        throw new NotImplementedException();
+        try
+        {
+            context.Stores.Remove(store);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
 
-    public Task<IEnumerable<Store>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Store>> GetAllAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await context.Stores.ToListAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
 
-    public Task<Store> GetByGuidAsync(Guid storeGuid, CancellationToken cancellationToken = default)
+    public async Task<Store?> GetByGuidAsync(Guid storeGuid, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await context.Stores.FirstOrDefaultAsync(
+                x => x.Guid == storeGuid,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
 
-    public Task<Store> UpdateAsync(Store store, CancellationToken cancellationToken = default)
+    public void Update(Store store)
     {
-        throw new NotImplementedException();
+        try
+        {
+            context.Stores.Update(store);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+}
+
+public class ReadonlyStoreRepository(EcommerceDbContext context) : IReadonlyStoreRepository
+{
+    public async Task<bool> Exist(Guid storeGuid, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await context.Stores.AnyAsync(x => x.Guid == storeGuid, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
 }

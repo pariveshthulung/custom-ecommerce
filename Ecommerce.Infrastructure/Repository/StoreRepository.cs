@@ -45,10 +45,12 @@ public class StoreRepository(EcommerceDbContext context) : IStoreRepository
     {
         try
         {
-            return await context.Stores.FirstOrDefaultAsync(
-                x => x.Guid == storeGuid,
-                cancellationToken
-            );
+            return await context
+                .Stores.AsTracking()
+                .FirstOrDefaultAsync(
+                    x => x.Guid == storeGuid && x.IsActive == true,
+                    cancellationToken
+                );
         }
         catch (Exception ex)
         {

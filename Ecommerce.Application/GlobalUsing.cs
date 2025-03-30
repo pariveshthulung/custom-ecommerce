@@ -1,3 +1,4 @@
+global using System.Reflection;
 global using System.Security.Claims;
 global using AutoMapper;
 global using Ecommerce.Application.Common.Abstraction.Messaging;

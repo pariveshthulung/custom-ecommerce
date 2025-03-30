@@ -1,6 +1,4 @@
 using Ecommerce.Infrastructure.EntityConfiguration.Enumerations;
-using Ecommerce.Shared.Extension;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using static Ecommerce.Shared.DomainDesign.Abstraction.Entity;
 
@@ -45,6 +43,7 @@ public class EcommerceDbContext : IdentityDbContext<AppUser, IdentityRole<long>,
     public DbSet<RoleEnum> RoleEnums { get; set; }
     public DbSet<EventType> EventTypes { get; set; }
     public DbSet<EventLog> EventLogs { get; set; }
+    public DbSet<OutBoxMessage> OutBoxMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -89,9 +88,9 @@ public class EcommerceDbContext : IdentityDbContext<AppUser, IdentityRole<long>,
                         break;
                 }
             }
-            await mediator.DispatchDomainEventAsync(this);
             _EnsureEnumerationUnchanged();
             await base.SaveChangesAsync(cancellationToken);
+            // await mediator.DispatchDomainEventAsync(this);
             return true;
         }
         catch (Exception ex)

@@ -1,6 +1,3 @@
-using Ecommerce.Application.Features.StoreFeature.Command;
-using Microsoft.AspNetCore.Authorization;
-
 namespace Ecommerce.Api.Controllers;
 
 [Authorize]
@@ -16,17 +13,19 @@ public class StoreController(IMapper mapper, ISender sender, ILogger<StoreContro
         OperationId = "Store.get.store",
         Tags = [_swaggerOperationTag]
     )]
-    [SwaggerResponse(StatusCodes.Status200OK, "Get store")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Get store", typeof(StoreBase))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Store not found")]
     [SwaggerResponse(
         StatusCodes.Status500InternalServerError,
         "Application failed to process the request"
     )]
-    public IActionResult GetStore(Guid storeGuid)
+    public async Task<IActionResult> GetStore(Guid storeGuid, CancellationToken cancellationToken)
     {
         try
         {
-            return Ok();
+            var response = await Sender.Send(new GetStoreQuery.Query(storeGuid), cancellationToken);
+
+            return Ok(Mapper.Map<StoreBase>(response));
         }
         catch (Exception ex)
         {
@@ -58,6 +57,43 @@ public class StoreController(IMapper mapper, ISender sender, ILogger<StoreContro
             var command = new CreateStoreCommand.Command(storeName, AppUserId);
             var response = await Sender.Send(command, cancellationToken);
             return response.Success ? Created() : response.ToProblemDetail();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error creating store");
+            throw;
+        }
+    }
+
+    [HttpPut("store/{storeGuid:guid}/update")]
+    [SwaggerOperation(
+        Summary = "Update store",
+        Description = "Update store",
+        OperationId = "Store.update.name",
+        Tags = [_swaggerOperationTag]
+    )]
+    [SwaggerResponse(StatusCodes.Status200OK, "Updated stored guid", typeof(Guid))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Error creating store")]
+    [SwaggerResponse(
+        StatusCodes.Status500InternalServerError,
+        "Application failed to process the request"
+    )]
+    public async Task<IActionResult> UpdateStore(
+        [FromRoute] Guid storeGuid,
+        string storeName,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            var command = new UpdateStoreCommand.Command(
+                storeGuid,
+                storeName,
+                AppUserId,
+                UserEmail
+            );
+            var response = await Sender.Send(command, cancellationToken);
+            return response.Success ? Ok(response) : response.ToProblemDetail();
         }
         catch (Exception ex)
         {

@@ -83,6 +83,7 @@ public static class RegisterCommand
     #region  Handler
     public class RegisterCommandHandler(
         // Logger<RegisterCommandHandler> logger,
+        ICurrentUserService currentUserService,
         UserManager<AppUser> userManager
     ) : ICommandHandler<Command, BaseResult<Response>>
     {
@@ -93,12 +94,14 @@ public static class RegisterCommand
         {
             try
             {
+                var currentUser = await currentUserService.GetCurrentUserAsync();
                 var appUser = AppUser.Create(
                     request.FirstName,
                     request.LastName,
                     request.Email,
                     request.PhoneNo,
-                    request.RoleId
+                    request.RoleId,
+                    currentUser.StoreGuid
                 );
 
                 var validationResult = await userManager.CreateAsync(appUser, request.Password);

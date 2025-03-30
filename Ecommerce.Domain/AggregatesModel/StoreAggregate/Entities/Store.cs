@@ -30,10 +30,15 @@ public class Store : AuditableEntity, IAggregateRoot
         _administratorsId.Add(administratorId);
     }
 
-    // public void AddProduct(Product product) => _products.Add(product);
-
-    public void Update(string storeName)
+    public void AddProduct(long productId)
     {
+        _productsId.Add(productId);
+    }
+
+    public void Update(string storeName, long appUserId, string userEmail)
+    {
+        var OldName = StoreName;
         StoreName = storeName;
+        AddDomainEvent(new StoreUpdatedEvent(appUserId, userEmail, OldName, this.StoreName));
     }
 }

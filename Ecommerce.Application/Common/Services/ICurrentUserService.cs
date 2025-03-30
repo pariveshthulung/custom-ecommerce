@@ -7,4 +7,5 @@ public interface ICurrentUserService
     string? StoreId { get; }
     string UserRole { get; }
     bool IsAuthenticated { get; }
+    Task<AppUser?> GetCurrentUserAsync();
 }

@@ -1,12 +1,23 @@
 namespace Ecommerce.Infrastructure.Repository;
 
-public class ProductRepository : IProductRepository
+public class ProductRepository(EcommerceDbContext ecommerceDbContext) : IProductRepository
 {
-    public IUnitOfWork UnitOfWork => throw new NotImplementedException();
+    public IUnitOfWork UnitOfWork => ecommerceDbContext;
 
-    public Task<Product> AddAsync(Product product, CancellationToken cancellationToken = default)
+    public async Task<Product> AddAsync(
+        Product product,
+        CancellationToken cancellationToken = default
+    )
     {
-        throw new NotImplementedException();
+        try
+        {
+            var entity = await ecommerceDbContext.Products.AddAsync(product);
+            return entity.Entity;
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
 
     public void Delete(Product product)
@@ -24,7 +35,10 @@ public class ProductRepository : IProductRepository
         throw new NotImplementedException();
     }
 
-    public Task<Product> GetByGuidAsync(Guid productGuid, CancellationToken cancellationToken = default)
+    public Task<Product> GetByGuidAsync(
+        Guid productGuid,
+        CancellationToken cancellationToken = default
+    )
     {
         throw new NotImplementedException();
     }

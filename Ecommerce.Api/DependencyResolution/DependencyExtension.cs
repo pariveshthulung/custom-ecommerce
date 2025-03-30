@@ -1,9 +1,3 @@
-using System.Reflection;
-using Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities;
-using Ecommerce.Infrastructure.Data;
-using FluentValidation;
-using Microsoft.AspNetCore.Identity;
-
 namespace Ecommerce.Api.DependencyResolution;
 
 public static class DependencyExtension
@@ -17,6 +11,7 @@ public static class DependencyExtension
         services.AddControllersWithViews();
         services.AddEcommerceApplication();
         services.AddEcommerceInfrastructure(environment, configuration);
+        services.AddQuartz(); // for background services
 
         services
             .AddApiVersioning(options =>
@@ -47,12 +42,7 @@ public static class DependencyExtension
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()) //try
         );
         services.AddAutoMapper(assembly);
-        // services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-        // services.AddLogging();
-        // services.AddSingleton<ILoggerFactory, LoggerFactory>();
-        // services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
 
         return services;
     }

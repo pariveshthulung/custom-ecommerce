@@ -3,7 +3,8 @@ namespace Ecommerce.Application.Features.StoreFeature.Command;
 public static class UpdateStoreCommand
 {
     #region Command
-    public record Command(Guid StoreGuid, string StoreName) : ICommand<BaseResult<Response>>;
+    public record Command(Guid StoreGuid, string StoreName, long AppuserId, string UserEmail)
+        : ICommand<BaseResult<Response>>;
     #endregion
     #region Validation
     public class Validation : AbstractValidator<Command>
@@ -34,9 +35,9 @@ public static class UpdateStoreCommand
                     request.StoreGuid,
                     cancellationToken
                 );
-                store!.Update(request.StoreName);
+                store!.Update(request.StoreName, request.AppuserId, request.UserEmail);
                 storeRepository.Update(store);
-                await storeRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+                await storeRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
                 return BaseResult<Response>.Ok(new Response(store.Guid));
             }
             catch (Exception ex)

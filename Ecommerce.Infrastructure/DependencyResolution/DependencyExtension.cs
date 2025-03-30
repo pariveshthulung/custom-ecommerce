@@ -1,5 +1,3 @@
-using Ecommerce.Infrastructure.Services;
-
 namespace Ecommerce.Infrastructure.DependencyResolution;
 
 public static class DependencyExtension
@@ -16,22 +14,27 @@ public static class DependencyExtension
         // services.AddDbContext<EcommerceDbContext>(options =>
         //     options.UseSqlServer(configuration.GetConnectionString("EcommerceDbContext"))
         // );
+
+        services.AddSingleton<ConvertDomainEventIntoOutboxMessageInterceptor>();
+
         services.AddDbContext<EcommerceDbContext>(
-            options =>
-                options.BuildReadOptimizedDbContext(
-                    environment,
-                    configuration.GetConnectionString("EcommerceDbContext")!,
-                    typeof(DependencyExtension).Assembly.GetName().Name!
-                ),
-            ServiceLifetime.Scoped
+            (sp, options) =>
+            {
+                var interceptor = sp.GetService<ConvertDomainEventIntoOutboxMessageInterceptor>();
+                options
+                    .BuildReadOptimizedDbContext(
+                        environment,
+                        configuration.GetConnectionString("EcommerceDbContext")!,
+                        typeof(DependencyExtension).Assembly.GetName().Name!
+                    )
+                    .AddInterceptors(interceptor!);
+            }
         );
         services.AddScoped<IDbConnection>(sp => new SqlConnection(
             configuration.GetConnectionString("EcommerceDbContext")
         ));
         services.AddHttpContextAccessor();
-        // services.AddLogging();
-        // services.AddSingleton<ILoggerFactory, LoggerFactory>();
-        // services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+
         services
             .AddScoped<ICartRepository, CartRepository>()
             .AddScoped<ICategoryRepository, CategoryRepository>()
@@ -47,6 +50,25 @@ public static class DependencyExtension
             .AddScoped<IReadonlyStoreRepository, ReadonlyStoreRepository>()
             .AddScoped<ILogRepository, LogRepository>();
 
+        return services;
+    }
+
+    public static IServiceCollection AddQuartz(this IServiceCollection services)
+    {
+        services.AddQuartz(configure =>
+        {
+            var jobKey = new JobKey(nameof(ProcessOutBoxMessageJob));
+            configure
+                .AddJob<ProcessOutBoxMessageJob>(jobKey)
+                .AddTrigger(trigger =>
+                    trigger
+                        .ForJob(jobKey)
+                        .WithSimpleSchedule(schedule =>
+                            schedule.WithIntervalInSeconds(10).RepeatForever()
+                        )
+                );
+        });
+        services.AddQuartzHostedService();
         return services;
     }
 }

@@ -19,7 +19,14 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
     private IList<long> _ordersId = [];
     public IReadOnlyCollection<long> OrdersId => _ordersId.AsReadOnly();
 
-    private AppUser(string firstName, string lastName, string email, string phoneNo, int roleId)
+    private AppUser(
+        string firstName,
+        string lastName,
+        string email,
+        string phoneNo,
+        int roleId,
+        Guid? storeGuid
+    )
     {
         FirstName = firstName;
         LastName = lastName;
@@ -27,6 +34,7 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
         PhoneNo = phoneNo;
         RoleId = roleId;
         UserName = firstName + lastName;
+        StoreGuid = storeGuid;
     }
 
     public static AppUser Create(
@@ -34,8 +42,9 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
         string lastName,
         string email,
         string phoneNo,
-        int roleId
-    ) => new(firstName, lastName, email, phoneNo, roleId);
+        int roleId,
+        Guid? storeGuid
+    ) => new(firstName, lastName, email, phoneNo, roleId, storeGuid);
 
     public void UpdateStoreId(Guid storeGuid) => StoreGuid = storeGuid;
 }

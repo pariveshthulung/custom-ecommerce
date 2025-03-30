@@ -13,6 +13,10 @@ public class EventType : Enumeration
         new(3, nameof(StoreUpdated).Humanize().Titleize());
     public static readonly EventType CartCreated =
         new(4, nameof(CartCreated).Humanize().Titleize());
-    public static readonly EventType CartUpdated =
-        new(5, nameof(CartUpdated).Humanize().Titleize());
+    public static readonly EventType ProductAdded =
+        new(5, nameof(ProductAdded).Humanize().Titleize());
+    public static readonly EventType ProductUpdated =
+        new(6, nameof(ProductUpdated).Humanize().Titleize());
+    public static readonly EventType ProductDeleted =
+        new(7, nameof(ProductDeleted).Humanize().Titleize());
 }

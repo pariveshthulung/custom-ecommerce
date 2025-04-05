@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace Ecommerce.Application.Features.AuthFeature.Commands;
 
 public static class LoginCommand
@@ -22,6 +20,7 @@ public static class LoginCommand
                 .WithMessage("Email is required.")
                 .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")
                 .WithMessage("Invalid email format.");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required");
         }
     }
     #endregion
@@ -29,7 +28,7 @@ public static class LoginCommand
     #region Handler
     public class LoginCommandHandler(
         ITokenService tokenService,
-        // ILogger<LoginCommandHandler> logger,
+        ILogger<LoginCommandHandler> logger,
         UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager
     ) : ICommandHandler<Command, BaseResult<Response>>
@@ -69,7 +68,7 @@ public static class LoginCommand
             }
             catch (Exception ex)
             {
-                // logger.LogError(ex, "Error authenticating user");
+                logger.LogError(ex, "Error authenticating user");
                 throw;
             }
         }

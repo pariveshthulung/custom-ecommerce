@@ -1,4 +1,4 @@
 namespace Ecommerce.Domain.AggregatesModel.ProductAggregate.Events;
 
-public record ProductAddedEvent(string UserEmail, string ProductName, long AppUserId)
+public record ProductAddedEvent(string ProductName, string UserEmail, long UserId, long StoreId)
     : INotification;

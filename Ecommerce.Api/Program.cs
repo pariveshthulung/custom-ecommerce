@@ -1,22 +1,12 @@
 using System.Text;
 using Ecommerce.Api.DependencyResolution;
-using Ecommerce.Infrastructure.Data;
 using Ecommerce.Shared.Middleware;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder
-    .Services.AddControllers()
-    .AddFluentValidation(fv =>
-        fv.RegisterValidatorsFromAssemblyContaining<LoginCommand.LoginCommandValidator>()
-    );
-;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
@@ -58,9 +48,6 @@ builder
     .AddMediatR(_ => _.RegisterServicesFromAssemblies(assembly))
     .AddAutoMapper(assembly);
 
-// builder.Services.AddLogging();
-// builder.Services.AddSingleton<ILoggerFactory, LoggerFactory>();
-// builder.Services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
 builder
     .Services.AddAuthentication(options =>
     {

@@ -13,6 +13,6 @@ public class StoreUpdatedDomainEventHandler(
     {
         var description =
             $"Store updated: {Notification.UserEmail} has updated store from {Notification.OldName} to {Notification.NewName}";
-        return new EventLog(EventType.StoreUpdated, description, Notification.AppUserId);
+        return new EventLog(EventType.StoreUpdated, description, Notification.AppUserId, null);
     }
 }

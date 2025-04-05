@@ -26,7 +26,7 @@ public class CartController(IMapper mapper, ISender sender, ILogger<CartControll
         {
             var query = new GetCartQuery.Query(cartGuid);
             var response = await Sender.Send(query, cancellationToken);
-            return response is null ? NotFound() : Ok(response);
+            return Ok(response);
         }
         catch (Exception ex)
         {

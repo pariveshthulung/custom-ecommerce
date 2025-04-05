@@ -113,11 +113,14 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("StoreGuid")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("StoreId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
+
+                    b.Property<Guid>("UserGuid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -345,6 +348,9 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<long?>("StoreId")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("UpdatedBy")
                         .HasColumnType("bigint");
 
@@ -512,6 +518,9 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<long>("StoreId")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("UpdatedBy")
                         .HasColumnType("bigint");
 
@@ -655,10 +664,6 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Property<int>("MaxUser")
                         .HasColumnType("int");
-
-                    b.Property<string>("ProductsId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StoreName")
                         .IsRequired()

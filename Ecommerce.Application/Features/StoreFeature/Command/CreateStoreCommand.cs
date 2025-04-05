@@ -12,7 +12,15 @@ public static class CreateStoreCommand
         {
             RuleFor(x => x.StoreName).NotEmpty().WithMessage("Invalid store name");
             RuleFor(x => x.AppUserId)
-                .MustAsync(appUserReadonlyRepository.StoreExistAsync)
+                .MustAsync(
+                    async (id, cancellationToken) =>
+                    {
+                        return !await appUserReadonlyRepository.StoreExistAsync(
+                            id,
+                            cancellationToken
+                        );
+                    }
+                )
                 .WithMessage("User can have have one store.");
         }
     }

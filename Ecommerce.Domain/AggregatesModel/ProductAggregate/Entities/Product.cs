@@ -1,9 +1,12 @@
+using Ecommerce.Domain.AggregatesModel.ProductAggregate.Events;
+
 namespace Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities;
 
 public class Product : AuditableEntity, IAggregateRoot
 {
     public string Name { get; private set; } = default!;
     public string Description { get; private set; } = default!;
+    public long StoreId { get; private set; }
     private List<ProductImage> _productImages = [];
     public IReadOnlyCollection<ProductImage> ProductImages => _productImages.AsReadOnly();
     private List<ProductItem> _productItems = [];
@@ -11,15 +14,25 @@ public class Product : AuditableEntity, IAggregateRoot
     private List<long> _categoriesId = [];
     public IReadOnlyCollection<long> CategoriesId => _categoriesId.AsReadOnly();
 
-    private Product(string name, string description)
+    private Product() { }
+
+    private Product(string name, string description, string userEmail, long appUserId, long storeId)
     {
         Name = Guard.Against.NullOrWhiteSpace(name);
         Description = Guard.Against.NullOrWhiteSpace(description);
+        StoreId = Guard.Against.NegativeOrZero(storeId);
+        AddDomainEvent(new ProductAddedEvent(this.Name, userEmail, appUserId, storeId));
     }
 
-    public static Product Create(string name, string description)
+    public static Product Create(
+        string name,
+        string description,
+        string userEmail,
+        long userId,
+        long storeId
+    )
     {
-        return new Product(name, description);
+        return new Product(name, description, userEmail, userId, storeId);
     }
 
     public void Update(string name, string description)

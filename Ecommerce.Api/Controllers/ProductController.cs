@@ -15,7 +15,6 @@ public class ProductController(IMapper mapper, ISender sender, ILogger<ProductCo
         Tags = [_swaggerOperationTag]
     )]
     [SwaggerResponse(StatusCodes.Status200OK, "Add new product", typeof(Guid))]
-    // [SwaggerResponse(StatusCodes.Status404NotFound, "Store not found")]
     [SwaggerResponse(
         StatusCodes.Status500InternalServerError,
         "Application failed to process the request"

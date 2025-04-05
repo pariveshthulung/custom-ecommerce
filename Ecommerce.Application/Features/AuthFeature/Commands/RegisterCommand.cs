@@ -21,8 +21,12 @@ public static class RegisterCommand
             IAppUserReadonlyRepository appUserReadonlyRepository,
             ICurrentUserService userService
         )
-            : base()
         {
+            RuleFor(x => x.RoleId)
+                .NotEmpty()
+                .WithMessage("Role is required")
+                .GreaterThan(0)
+                .WithMessage("Invalid role");
             RuleFor(x => x)
                 .Must(
                     (x, cancellationToken) =>
@@ -33,9 +37,10 @@ public static class RegisterCommand
                         return _CheckRegisterPermission(currentUserRoleId, x.RoleId);
                     }
                 )
-                .WithMessage("You don't have permission to add new user.");
+                .WithMessage("You don't have permission to add new user.")
+                .When(x => x.RoleId > 0);
             RuleFor(x => x.FirstName).NotEmpty().WithMessage("Invalid first name.");
-            RuleFor(x => x.FirstName).NotEmpty().WithMessage("Invalid last name.");
+            RuleFor(x => x.LastName).NotEmpty().WithMessage("Invalid last name.");
             RuleFor(x => x.Email)
                 .NotEmpty()
                 .WithMessage("Email is required.")
@@ -52,7 +57,8 @@ public static class RegisterCommand
                     }
                 )
                 .WithMessage("Email already exist.");
-            RuleFor(x => x.Password).NotEmpty().WithMessage("Invalid password");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required");
+
             RuleFor(x => x)
                 .Must(
                     (x, cancellationToken) =>
@@ -82,7 +88,7 @@ public static class RegisterCommand
 
     #region  Handler
     public class RegisterCommandHandler(
-        // Logger<RegisterCommandHandler> logger,
+        Logger<RegisterCommandHandler> logger,
         ICurrentUserService currentUserService,
         UserManager<AppUser> userManager
     ) : ICommandHandler<Command, BaseResult<Response>>
@@ -101,7 +107,7 @@ public static class RegisterCommand
                     request.Email,
                     request.PhoneNo,
                     request.RoleId,
-                    currentUser.StoreGuid
+                    currentUser?.StoreId
                 );
 
                 var validationResult = await userManager.CreateAsync(appUser, request.Password);
@@ -114,11 +120,11 @@ public static class RegisterCommand
                     return BaseResult<Response>.Failure(errors);
                 }
 
-                return BaseResult<Response>.Ok(new Response(appUser.Id));
+                return BaseResult<Response>.Ok(new Response(appUser.UserGuid));
             }
             catch (Exception ex)
             {
-                // logger.LogError(ex, "Error registering user");
+                logger.LogError(ex, "Error registering user");
                 throw;
             }
         }
@@ -126,6 +132,6 @@ public static class RegisterCommand
     #endregion
 
     #region Response
-    public record Response(long UserId);
+    public record Response(Guid UserGuid);
     #endregion
 }

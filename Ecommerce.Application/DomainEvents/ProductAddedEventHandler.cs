@@ -4,6 +4,7 @@ namespace Ecommerce.Application.DomainEvents;
 
 public class ProductAddedEventHandler(
     ILogRepository logRepository,
+    IStoreRepository storeRepository,
     ILogger<ProductAddedEventHandler> logger
 )
     : EcommerceDomainEventBaseHandler<ProductAddedEventHandler, ProductAddedEvent>(
@@ -15,12 +16,17 @@ public class ProductAddedEventHandler(
     {
         try
         {
+            // var product = await productRepository.GetByGuidAsync(
+            //     Notification.ProductGuid,
+            //     cancellationToken
+            // );
             var description =
                 $"Product Added: {Notification.UserEmail} added new product {Notification.ProductName}";
             var eventLog = new EventLog(
                 EventType.ProductAdded,
                 description,
-                Notification.AppUserId
+                Notification.UserId,
+                Notification.StoreId
             );
             return eventLog;
         }

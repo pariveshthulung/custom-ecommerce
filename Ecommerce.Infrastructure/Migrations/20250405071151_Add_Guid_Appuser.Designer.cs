@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    [Migration("20250316043626_Inital")]
-    partial class Inital
+    [Migration("20250405071151_Add_Guid_Appuser")]
+    partial class Add_Guid_Appuser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,9 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<long?>("CartId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -81,6 +84,10 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("OrdersId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -115,11 +122,18 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("UserGuid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CartId")
+                        .IsUnique()
+                        .HasFilter("[CartId] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -130,8 +144,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("StoreId");
 
                     b.ToTable("AppUsers", "ecom");
                 });
@@ -144,8 +156,8 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("AddedBy")
-                        .HasColumnType("int");
+                    b.Property<long>("AddedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
@@ -162,16 +174,13 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId")
-                        .IsUnique();
 
                     b.ToTable("Carts", "ecom");
                 });
@@ -239,12 +248,7 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<long?>("ProductId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("Categories", "ecom");
                 });
@@ -313,6 +317,73 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.ToTable("InvarientOptions", "ecom");
                 });
 
+            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.EventAggregate.Entities.EventLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AddedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("AddedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("AppUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("EventTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("StoreId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("EventTypeId");
+
+                    b.ToTable("EventLogs", "ecom");
+                });
+
+            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.EventAggregate.Enumerations.EventType", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EventTypes", "ecom");
+                });
+
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.OrderAggregate.Entities.Order", b =>
                 {
                     b.Property<long>("Id")
@@ -346,8 +417,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
 
                     b.ToTable("Orders", "ecom");
                 });
@@ -385,6 +454,34 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.ToTable("OrderItems", "ecom");
                 });
 
+            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.OutBox.OutBoxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Errors")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("OccuredOnUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ProcessedOnUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutBoxMessages");
+                });
+
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities.Product", b =>
                 {
                     b.Property<long>("Id")
@@ -393,11 +490,15 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("AddedBy")
-                        .HasColumnType("int");
+                    b.Property<long>("AddedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("CategoriesId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -420,18 +521,16 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<long?>("StoreId")
+                    b.Property<long>("StoreId")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("StoreId");
 
                     b.ToTable("Products", "ecom");
                 });
@@ -547,11 +646,15 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("AddedBy")
-                        .HasColumnType("int");
+                    b.Property<long>("AddedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("AdministratorsId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
@@ -569,8 +672,8 @@ namespace Ecommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
@@ -730,15 +833,15 @@ namespace Ecommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities.AppUser", b =>
                 {
+                    b.HasOne("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.Cart", null)
+                        .WithOne()
+                        .HasForeignKey("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities.AppUser", "CartId");
+
                     b.HasOne("Ecommerce.Domain.Enumerations.RoleEnum", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.HasOne("Ecommerce.Domain.AggregatesModel.StoreAggregate.Entities.Store", null)
-                        .WithMany()
-                        .HasForeignKey("StoreId");
 
                     b.OwnsOne("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Address", "Address", b1 =>
                         {
@@ -786,15 +889,6 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.Cart", b =>
-                {
-                    b.HasOne("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities.AppUser", null)
-                        .WithOne("Cart")
-                        .HasForeignKey("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.Cart", "AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.CartItem", b =>
                 {
                     b.HasOne("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.Cart", null)
@@ -802,14 +896,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CategoryAggregate.Entities.Category", b =>
-                {
-                    b.HasOne("Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities.Product", null)
-                        .WithMany("Categories")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CategoryAggregate.Entities.Invarient", b =>
@@ -830,13 +916,21 @@ namespace Ecommerce.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.OrderAggregate.Entities.Order", b =>
+            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.EventAggregate.Entities.EventLog", b =>
                 {
                     b.HasOne("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities.AppUser", null)
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Ecommerce.Domain.AggregatesModel.EventAggregate.Enumerations.EventType", "EventType")
+                        .WithMany()
+                        .HasForeignKey("EventTypeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("EventType");
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.OrderAggregate.Entities.OrderItem", b =>
@@ -846,14 +940,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities.Product", b =>
-                {
-                    b.HasOne("Ecommerce.Domain.AggregatesModel.StoreAggregate.Entities.Store", null)
-                        .WithMany("Products")
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities.ProductImage", b =>
@@ -925,14 +1011,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities.AppUser", b =>
-                {
-                    b.Navigation("Cart")
-                        .IsRequired();
-
-                    b.Navigation("Orders");
-                });
-
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.CartAggregate.Entities.Cart", b =>
                 {
                     b.Navigation("CartItems");
@@ -955,16 +1033,9 @@ namespace Ecommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities.Product", b =>
                 {
-                    b.Navigation("Categories");
-
                     b.Navigation("ProductImages");
 
                     b.Navigation("ProductItems");
-                });
-
-            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.StoreAggregate.Entities.Store", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

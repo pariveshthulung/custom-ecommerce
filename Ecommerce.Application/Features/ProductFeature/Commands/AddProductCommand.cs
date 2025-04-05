@@ -1,3 +1,5 @@
+using Ecommerce.Domain.AggregatesModel.ProductAggregate.Events;
+
 namespace Ecommerce.Application.Features.ProductFeature.Commands;
 
 public static class AddProductCommand
@@ -14,16 +16,16 @@ public static class AddProductCommand
     {
         public AddProductCommandValidation()
         {
-            RuleFor(x => x.Name).NotEmpty().WithMessage("Invalid name");
-            RuleFor(x => x.Description).NotEmpty().WithMessage("Invalid name");
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");
+            RuleFor(x => x.Description).NotEmpty().WithMessage("Description is required");
         }
     }
     #endregion
     #region  Handler
     public class Handler(
         IProductRepository productRepository,
-        IStoreRepository storeRepository,
-        ICurrentUserService currentUserService
+        ICurrentUserService currentUserService,
+        IAppUserRepository appUserRepository
     ) : ICommandHandler<Command, BaseResult<Guid>>
     {
         public async Task<BaseResult<Guid>> Handle(
@@ -31,12 +33,18 @@ public static class AddProductCommand
             CancellationToken cancellationToken
         )
         {
-            var storeGuid = Guid.Parse(currentUserService.StoreId);
-            var newProduct = Product.Create(request.Name, request.Description);
+            var currentUser = await appUserRepository.GetByEmailAsync(
+                currentUserService.UserEmail,
+                cancellationToken
+            );
+            var newProduct = Product.Create(
+                request.Name,
+                request.Description,
+                currentUserService.UserEmail,
+                currentUserService.UserId,
+                currentUser.StoreId.GetValueOrDefault()
+            );
             var product = await productRepository.AddAsync(newProduct, cancellationToken);
-            var store = await storeRepository.GetByGuidAsync(storeGuid, cancellationToken);
-            store.AddProduct(product.Id);
-            storeRepository.Update(store);
             await productRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             return BaseResult<Guid>.Ok(newProduct.Guid);
         }

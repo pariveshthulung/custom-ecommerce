@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    [Migration("20250321135953_Add_Eventtype")]
-    partial class Add_Eventtype
+    [Migration("20250404160356_Update_Appuser")]
+    partial class Update_Appuser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,8 +141,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("StoreId");
 
                     b.ToTable("AppUsers", "ecom");
                 });
@@ -350,6 +348,9 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<long?>("StoreId")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("UpdatedBy")
                         .HasColumnType("bigint");
 
@@ -450,6 +451,34 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.ToTable("OrderItems", "ecom");
                 });
 
+            modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.OutBox.OutBoxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Errors")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("OccuredOnUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ProcessedOnUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutBoxMessages");
+                });
+
             modelBuilder.Entity("Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities.Product", b =>
                 {
                     b.Property<long>("Id")
@@ -488,6 +517,9 @@ namespace Ecommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("StoreId")
+                        .HasColumnType("bigint");
 
                     b.Property<long?>("UpdatedBy")
                         .HasColumnType("bigint");
@@ -617,6 +649,10 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("AdministratorsId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
 
@@ -628,10 +664,6 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Property<int>("MaxUser")
                         .HasColumnType("int");
-
-                    b.Property<string>("ProductsId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StoreName")
                         .IsRequired()
@@ -807,10 +839,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.HasOne("Ecommerce.Domain.AggregatesModel.StoreAggregate.Entities.Store", null)
-                        .WithMany()
-                        .HasForeignKey("StoreId");
 
                     b.OwnsOne("Ecommerce.Domain.AggregatesModel.AppUserAggregate.Address", "Address", b1 =>
                         {

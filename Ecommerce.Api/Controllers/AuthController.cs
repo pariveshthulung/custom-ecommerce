@@ -1,22 +1,18 @@
 namespace Ecommerce.Api.Controllers;
 
-[ApiController]
-public class AuthController(
-    ISender sender,
-    // ILogger<AuthController> logger,
-    IMapper mapper
-) : EcommerceControllerBase(mapper, sender)
+public class AuthController(ISender sender, ILogger<AuthController> logger, IMapper mapper)
+    : EcommerceControllerBase(mapper, sender)
 {
     private const string _swaggerOperationTag = "auth";
 
     [HttpPost("auth/login")]
     [SwaggerOperation(
-        Summary = "Auth login",
-        Description = "Auth login",
+        Summary = "User authentication",
+        Description = "Authenticate user and return token",
         OperationId = "Auth.Login",
         Tags = [_swaggerOperationTag]
     )]
-    [SwaggerResponse(StatusCodes.Status200OK, "Auth login")]
+    [SwaggerResponse(StatusCodes.Status200OK, "User authentication", typeof(LoginCommand.Response))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid username and password")]
     [SwaggerResponse(
         StatusCodes.Status500InternalServerError,
@@ -39,24 +35,24 @@ public class AuthController(
                     Expires = DateTime.UtcNow.AddHours(1)
                 }
             );
-            return response.Success ? Ok(response) : response.ToProblemDetail();
+            return Ok(response);
         }
         catch (Exception ex)
         {
-            // logger.LogError(ex, "Error login in user");
+            logger.LogError(ex, "Error login in user");
             throw;
         }
     }
 
+    [Authorize]
     [HttpPost("auth/register")]
     [SwaggerOperation(
-        Summary = "Auth register",
-        Description = "Auth register",
+        Summary = "Register user",
+        Description = "Register new user and return id",
         OperationId = "Auth.Register",
         Tags = [_swaggerOperationTag]
     )]
-    [SwaggerResponse(StatusCodes.Status201Created, "Auth register")]
-    [SwaggerResponse(StatusCodes.Status400BadRequest)]
+    [SwaggerResponse(StatusCodes.Status201Created, "Register user")]
     [SwaggerResponse(
         StatusCodes.Status500InternalServerError,
         "Application failed to process the request"
@@ -70,11 +66,11 @@ public class AuthController(
         {
             var command = Mapper.Map<RegisterCommand.Command>(registerDto);
             var response = await Sender.Send(command, cancellationToken);
-            return response.Success ? Created() : response.ToProblemDetail();
+            return Created();
         }
         catch (Exception ex)
         {
-            // logger.LogError(ex, "Error login in user");
+            logger.LogError(ex, "Error Registering new user");
             throw;
         }
     }

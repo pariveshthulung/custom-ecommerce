@@ -1,31 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Ecommerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Update_Store : Migration
+    public partial class Add_Guid_Appuser : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "AdministratorsId",
+            migrationBuilder.AddColumn<Guid>(
+                name: "UserGuid",
                 schema: "ecom",
-                table: "Stores",
-                type: "nvarchar(max)",
+                table: "AppUsers",
+                type: "uniqueidentifier",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "AdministratorsId",
+                name: "UserGuid",
                 schema: "ecom",
-                table: "Stores");
+                table: "AppUsers");
         }
     }
 }

@@ -1,4 +1,5 @@
 using Ecommerce.Infrastructure.EntityConfiguration.Enumerations;
+using Ecommerce.Shared.Extension;
 using Microsoft.AspNetCore.Identity;
 using static Ecommerce.Shared.DomainDesign.Abstraction.Entity;
 

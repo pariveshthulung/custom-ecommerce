@@ -56,7 +56,7 @@ public class StoreController(IMapper mapper, ISender sender, ILogger<StoreContro
         {
             var command = new CreateStoreCommand.Command(storeName, AppUserId);
             var response = await Sender.Send(command, cancellationToken);
-            return response.Success ? Created() : response.ToProblemDetail();
+            return Created();
         }
         catch (Exception ex)
         {
@@ -93,7 +93,7 @@ public class StoreController(IMapper mapper, ISender sender, ILogger<StoreContro
                 UserEmail
             );
             var response = await Sender.Send(command, cancellationToken);
-            return response.Success ? Ok(response) : response.ToProblemDetail();
+            return Ok(response);
         }
         catch (Exception ex)
         {

@@ -74,7 +74,7 @@ public class AppUserReadonlyRepository(
     {
         try
         {
-            return await ecommerceDbContext.AppUsers.AnyAsync(x => x.StoreGuid != null);
+            return await ecommerceDbContext.AppUsers.AnyAsync(x => x.StoreId != null);
         }
         catch (Exception ex)
         {

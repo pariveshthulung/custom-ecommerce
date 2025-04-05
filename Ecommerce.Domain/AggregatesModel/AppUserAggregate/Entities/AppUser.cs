@@ -4,6 +4,7 @@ namespace Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities;
 public class AppUser : IdentityUser<long>, IAggregateRoot
 {
     public string FirstName { get; private set; } = default!;
+    public Guid UserGuid { get; private set; }
     public string LastName { get; private set; } = default!;
     public string FullName => $"{FirstName} {LastName}";
     public string PhoneNo { get; private set; } = default!;
@@ -13,10 +14,10 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
     public bool IsDeleted { get; private set; }
     public int RoleId { get; private set; }
     public bool IsActive { get; private set; }
-    public Guid? StoreGuid { get; private set; }
+    public long? StoreId { get; private set; }
     public long? CartId { get; private set; } = default!;
     public Address? Address { get; private set; } = default!;
-    private IList<long> _ordersId = [];
+    private IList<long>? _ordersId = [];
     public IReadOnlyCollection<long> OrdersId => _ordersId.AsReadOnly();
 
     private AppUser(
@@ -25,7 +26,7 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
         string email,
         string phoneNo,
         int roleId,
-        Guid? storeGuid
+        long? storeId
     )
     {
         FirstName = firstName;
@@ -34,7 +35,9 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
         PhoneNo = phoneNo;
         RoleId = roleId;
         UserName = firstName + lastName;
-        StoreGuid = storeGuid;
+        StoreId = storeId;
+        UserGuid = Guid.NewGuid();
+        // add domain event
     }
 
     public static AppUser Create(
@@ -43,8 +46,8 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
         string email,
         string phoneNo,
         int roleId,
-        Guid? storeGuid
-    ) => new(firstName, lastName, email, phoneNo, roleId, storeGuid);
+        long? storeId
+    ) => new(firstName, lastName, email, phoneNo, roleId, storeId);
 
-    public void UpdateStoreId(Guid storeGuid) => StoreGuid = storeGuid;
+    public void UpdateStoreId(long storeId) => StoreId = storeId;
 }

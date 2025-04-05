@@ -30,6 +30,94 @@ namespace Ecommerce.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Carts",
+                schema: "ecom",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppUserId = table.Column<long>(type: "bigint", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    AddedBy = table.Column<long>(type: "bigint", nullable: false),
+                    AddedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<long>(type: "bigint", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                schema: "ecom",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventTypes",
+                schema: "ecom",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                schema: "ecom",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    AppUserId = table.Column<long>(type: "bigint", nullable: false),
+                    OrderedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TransactionCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OutBoxMessages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EventType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EventData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProcessedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    OccuredOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Errors = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OutBoxMessages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductConfirms",
                 schema: "ecom",
                 columns: table => new
@@ -45,6 +133,29 @@ namespace Ecommerce.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductConfirms", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                schema: "ecom",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    CategoriesId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    AddedBy = table.Column<long>(type: "bigint", nullable: false),
+                    AddedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<long>(type: "bigint", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,12 +180,14 @@ namespace Ecommerce.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MaxUser = table.Column<int>(type: "int", nullable: false),
                     StoreName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductsId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdministratorsId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    AddedBy = table.Column<int>(type: "int", nullable: false),
+                    AddedBy = table.Column<long>(type: "bigint", nullable: false),
                     AddedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedBy = table.Column<long>(type: "bigint", nullable: true),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -104,6 +217,138 @@ namespace Ecommerce.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CartItems",
+                schema: "ecom",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CartId = table.Column<long>(type: "bigint", nullable: false),
+                    ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    AddedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsChecked = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CartItems_Carts_CartId",
+                        column: x => x.CartId,
+                        principalSchema: "ecom",
+                        principalTable: "Carts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invarients",
+                schema: "ecom",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    CategoryId = table.Column<long>(type: "bigint", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invarients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invarients_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalSchema: "ecom",
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                schema: "ecom",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderId = table.Column<long>(type: "bigint", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalSchema: "ecom",
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductImages",
+                schema: "ecom",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductImages_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalSchema: "ecom",
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductItems",
+                schema: "ecom",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    SKU = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductItems_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalSchema: "ecom",
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AppUsers",
                 schema: "ecom",
                 columns: table => new
@@ -119,13 +364,15 @@ namespace Ecommerce.Infrastructure.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    StoreId = table.Column<long>(type: "bigint", nullable: true),
+                    StoreGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CartId = table.Column<long>(type: "bigint", nullable: true),
                     Customer_City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Customer_AddressLine = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Customer_StreetNo = table.Column<int>(type: "int", nullable: true),
                     Customer_Region = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Customer_PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Customer_IsDefault = table.Column<bool>(type: "bit", nullable: true),
+                    OrdersId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
@@ -145,45 +392,40 @@ namespace Ecommerce.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AppUsers", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_AppUsers_Carts_CartId",
+                        column: x => x.CartId,
+                        principalSchema: "ecom",
+                        principalTable: "Carts",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_AppUsers_RoleEnums_RoleId",
                         column: x => x.RoleId,
                         principalSchema: "ecom",
                         principalTable: "RoleEnums",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AppUsers_Stores_StoreId",
-                        column: x => x.StoreId,
-                        principalSchema: "ecom",
-                        principalTable: "Stores",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "InvarientOptions",
                 schema: "ecom",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    StoreId = table.Column<long>(type: "bigint", nullable: true),
+                    InvarientId = table.Column<long>(type: "bigint", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    AddedBy = table.Column<int>(type: "int", nullable: false),
-                    AddedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_InvarientOptions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Stores_StoreId",
-                        column: x => x.StoreId,
+                        name: "FK_InvarientOptions_Invarients_InvarientId",
+                        column: x => x.InvarientId,
                         principalSchema: "ecom",
-                        principalTable: "Stores",
+                        principalTable: "Invarients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -278,240 +520,38 @@ namespace Ecommerce.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Carts",
+                name: "EventLogs",
                 schema: "ecom",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AppUserId = table.Column<long>(type: "bigint", nullable: false),
+                    EventTypeId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    AddedBy = table.Column<int>(type: "int", nullable: false),
+                    AddedBy = table.Column<long>(type: "bigint", nullable: false),
                     AddedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedBy = table.Column<long>(type: "bigint", nullable: true),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
+                    table.PrimaryKey("PK_EventLogs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Carts_AppUsers_AppUserId",
+                        name: "FK_EventLogs_AppUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalSchema: "ecom",
                         principalTable: "AppUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                schema: "ecom",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    AppUserId = table.Column<long>(type: "bigint", nullable: false),
-                    OrderedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    TransactionCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_AppUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalSchema: "ecom",
-                        principalTable: "AppUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Categories",
-                schema: "ecom",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    ProductId = table.Column<long>(type: "bigint", nullable: true),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Categories_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalSchema: "ecom",
-                        principalTable: "Products",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductImages",
-                schema: "ecom",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<long>(type: "bigint", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductImages_Products_ProductId",
-                        column: x => x.ProductId,
+                        name: "FK_EventLogs_EventTypes_EventTypeId",
+                        column: x => x.EventTypeId,
                         principalSchema: "ecom",
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductItems",
-                schema: "ecom",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    ProductId = table.Column<long>(type: "bigint", nullable: false),
-                    SKU = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProductItems_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalSchema: "ecom",
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CartItems",
-                schema: "ecom",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CartId = table.Column<long>(type: "bigint", nullable: false),
-                    ProductId = table.Column<long>(type: "bigint", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    AddedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsChecked = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CartItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CartItems_Carts_CartId",
-                        column: x => x.CartId,
-                        principalSchema: "ecom",
-                        principalTable: "Carts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderItems",
-                schema: "ecom",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<long>(type: "bigint", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalSchema: "ecom",
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Invarients",
-                schema: "ecom",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    CategoryId = table.Column<long>(type: "bigint", nullable: false),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Invarients", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Invarients_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalSchema: "ecom",
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InvarientOptions",
-                schema: "ecom",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    InvarientId = table.Column<long>(type: "bigint", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InvarientOptions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_InvarientOptions_Invarients_InvarientId",
-                        column: x => x.InvarientId,
-                        principalSchema: "ecom",
-                        principalTable: "Invarients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "EventTypes",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -521,16 +561,18 @@ namespace Ecommerce.Infrastructure.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppUsers_CartId",
+                schema: "ecom",
+                table: "AppUsers",
+                column: "CartId",
+                unique: true,
+                filter: "[CartId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AppUsers_RoleId",
                 schema: "ecom",
                 table: "AppUsers",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppUsers_StoreId",
-                schema: "ecom",
-                table: "AppUsers",
-                column: "StoreId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -574,17 +616,16 @@ namespace Ecommerce.Infrastructure.Migrations
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Carts_AppUserId",
+                name: "IX_EventLogs_AppUserId",
                 schema: "ecom",
-                table: "Carts",
-                column: "AppUserId",
-                unique: true);
+                table: "EventLogs",
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_ProductId",
+                name: "IX_EventLogs_EventTypeId",
                 schema: "ecom",
-                table: "Categories",
-                column: "ProductId");
+                table: "EventLogs",
+                column: "EventTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InvarientOptions_InvarientId",
@@ -605,12 +646,6 @@ namespace Ecommerce.Infrastructure.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_AppUserId",
-                schema: "ecom",
-                table: "Orders",
-                column: "AppUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ProductImages_ProductId",
                 schema: "ecom",
                 table: "ProductImages",
@@ -621,12 +656,6 @@ namespace Ecommerce.Infrastructure.Migrations
                 schema: "ecom",
                 table: "ProductItems",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_StoreId",
-                schema: "ecom",
-                table: "Products",
-                column: "StoreId");
         }
 
         /// <inheritdoc />
@@ -652,12 +681,19 @@ namespace Ecommerce.Infrastructure.Migrations
                 schema: "ecom");
 
             migrationBuilder.DropTable(
+                name: "EventLogs",
+                schema: "ecom");
+
+            migrationBuilder.DropTable(
                 name: "InvarientOptions",
                 schema: "ecom");
 
             migrationBuilder.DropTable(
                 name: "OrderItems",
                 schema: "ecom");
+
+            migrationBuilder.DropTable(
+                name: "OutBoxMessages");
 
             migrationBuilder.DropTable(
                 name: "ProductConfirms",
@@ -672,10 +708,18 @@ namespace Ecommerce.Infrastructure.Migrations
                 schema: "ecom");
 
             migrationBuilder.DropTable(
+                name: "Stores",
+                schema: "ecom");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Carts",
+                name: "AppUsers",
+                schema: "ecom");
+
+            migrationBuilder.DropTable(
+                name: "EventTypes",
                 schema: "ecom");
 
             migrationBuilder.DropTable(
@@ -687,15 +731,11 @@ namespace Ecommerce.Infrastructure.Migrations
                 schema: "ecom");
 
             migrationBuilder.DropTable(
-                name: "Categories",
-                schema: "ecom");
-
-            migrationBuilder.DropTable(
-                name: "AppUsers",
-                schema: "ecom");
-
-            migrationBuilder.DropTable(
                 name: "Products",
+                schema: "ecom");
+
+            migrationBuilder.DropTable(
+                name: "Carts",
                 schema: "ecom");
 
             migrationBuilder.DropTable(
@@ -703,7 +743,7 @@ namespace Ecommerce.Infrastructure.Migrations
                 schema: "ecom");
 
             migrationBuilder.DropTable(
-                name: "Stores",
+                name: "Categories",
                 schema: "ecom");
         }
     }

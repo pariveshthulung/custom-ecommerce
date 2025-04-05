@@ -27,12 +27,12 @@ public class SeederRepository(IDbConnection dbConnection, PasswordHasher<AppUser
                 var query =
                     $@"INSERT INTO [EcommerceDb].[ecom].[AppUsers] (
                 [FirstName], [LastName], [PhoneNo], [RefreshToken], [RefreshTokenExpiryTime], 
-                [IsPasswordExpire], [IsDeleted], [RoleId], [IsActive], [StoreId], 
+                [IsPasswordExpire], [IsDeleted], [RoleId], [IsActive], [StoreGuid], 
                 [Customer_City], [Customer_AddressLine], [Customer_StreetNo], [Customer_Region], 
                 [Customer_PostalCode], [Customer_IsDefault], [UserName], [NormalizedUserName], 
                 [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], 
                 [ConcurrencyStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], 
-                [LockoutEnd], [LockoutEnabled], [AccessFailedCount]
+                [LockoutEnd], [LockoutEnabled], [AccessFailedCount],[OrdersId]
                 ) 
                 VALUES (
                     'Super', 'Admin', '1234567890', 'sample-refresh-token', '2025-12-31 23:59:59', 
@@ -41,7 +41,7 @@ public class SeederRepository(IDbConnection dbConnection, PasswordHasher<AppUser
                     '10001', 1, 'johndoe', 'JOHNDOE', 
                     'superadmin@gmail.com', 'SUPERADMIN@GMAIL.COM', 1, '{password}', 'security-stamp', 
                     'concurrency-stamp', '9876543210', 1, 0, 
-                    NULL, 1, 0
+                    NULL, 1, 0,'0'
                 )";
 
                 return await dbConnection.ExecuteAsync(query);

@@ -4,7 +4,7 @@ namespace Ecommerce.Api.Controllers.Common;
 [Produces("application/json")]
 // [ApiExplorerSettings(GroupName = ApiGrouping.EcommerceApiGroupingName)]
 [ApiVersion(1.0)]
-[EcommerceRoute("")]
+// [EcommerceRoute("")]
 public class EcommerceControllerBase(IMapper mapper, ISender sender) : ControllerBase
 {
     protected readonly IMapper Mapper = mapper;

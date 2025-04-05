@@ -2,11 +2,8 @@ using Ecommerce.Application.Features.SeederFeature;
 
 namespace Ecommerce.Api.Controllers;
 
-public class SeederController(
-    ISender sender,
-    // ILogger<AuthController> logger,
-    IMapper mapper
-) : EcommerceControllerBase(mapper, sender)
+public class SeederController(ISender sender, ILogger<AuthController> logger, IMapper mapper)
+    : EcommerceControllerBase(mapper, sender)
 {
     private const string _swaggerOperationTag = "Seeder";
 
@@ -28,7 +25,7 @@ public class SeederController(
         try
         {
             var response = await Sender.Send(new SeedRoleCommand.Command(), cancellationToken);
-            return response.Success ? Ok(response) : response.ToProblemDetail();
+            return Ok(response);
         }
         catch (Exception ex)
         {
@@ -58,11 +55,11 @@ public class SeederController(
                 new SeedAdministratorCommand.Command(),
                 cancellationToken
             );
-            return response.Success ? Ok(response) : response.ToProblemDetail();
+            return Ok(response);
         }
         catch (Exception ex)
         {
-            // logger.LogError(ex, "Error login in user");
+            logger.LogError(ex, "Error login in user");
             throw;
         }
     }

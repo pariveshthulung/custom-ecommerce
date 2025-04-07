@@ -18,7 +18,19 @@ public static class ResultExtension
             Status = statusCode,
             Title = result?.Errors?.FirstOrDefault()?.FieldName ?? "Error:",
             Type = $"https://httpstatuses.com/{statusCode}",
-            Extensions = new Dictionary<string, object?> { { "errors", result?.Errors?.ToList() } }
+            Extensions = new Dictionary<string, object?>
+            {
+                {
+                    "errors",
+                    result
+                        ?.Errors?.Select(x => new
+                        {
+                            PropertyName = x.FieldName,
+                            ErrorMessage = x.Description
+                        })
+                        .ToList()
+                }
+            }
         };
 
         return new ObjectResult(problemDetails) { StatusCode = problemDetails.Status };
@@ -45,18 +57,5 @@ public static class ResultExtension
         };
 
         return problemDetails;
-    }
-
-    public static BaseResult<TData> ToBaseResult<TData>(this ValidationException validationResult)
-    {
-        var errors = validationResult
-            .Errors.Select(e => new Error(
-                StatusCodes.Status400BadRequest,
-                e.PropertyName,
-                e.ErrorMessage
-            ))
-            .ToList();
-
-        return new BaseResult<TData> { Success = false, Errors = errors };
     }
 }

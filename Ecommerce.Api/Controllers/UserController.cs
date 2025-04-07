@@ -14,7 +14,7 @@ public class UserController(IMapper mapper, ISender sender, ILogger<UserControll
         OperationId = "User.Profile",
         Tags = [_swaggerOperationTag]
     )]
-    [SwaggerResponse(StatusCodes.Status200OK, "User profile")]
+    [SwaggerResponse(StatusCodes.Status200OK, "User profile", typeof(UserDto))]
     [SwaggerResponse(
         StatusCodes.Status500InternalServerError,
         "Application failed to process the request"
@@ -29,6 +29,32 @@ public class UserController(IMapper mapper, ISender sender, ILogger<UserControll
         catch (Exception ex)
         {
             logger.LogError(ex, "Error getting current user profile");
+            throw;
+        }
+    }
+
+    [HttpGet("user/{userGuid:guid}")]
+    [SwaggerOperation(
+        Summary = "Get user",
+        Description = "Get user by guid ",
+        OperationId = "Get.User",
+        Tags = [_swaggerOperationTag]
+    )]
+    [SwaggerResponse(StatusCodes.Status200OK, "Get user", typeof(UserDto))]
+    [SwaggerResponse(
+        StatusCodes.Status500InternalServerError,
+        "Application failed to process the request"
+    )]
+    public async Task<IActionResult> GetUser(Guid userGuid, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await Sender.Send(new GetUserQuery.Query(userGuid), cancellationToken);
+            return Ok(Mapper.Map<UserDto>(response.Data.UserModel));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error fetching user");
             throw;
         }
     }

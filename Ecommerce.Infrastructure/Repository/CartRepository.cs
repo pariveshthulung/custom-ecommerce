@@ -1,41 +1,95 @@
 namespace Ecommerce.Infrastructure.Repository;
 
-public class CartRepository : ICartRepository
+public class CartRepository(ILogger<CartRepository> logger, EcommerceDbContext ecommerceDbContext)
+    : ICartRepository
 {
-    public IUnitOfWork UnitOfWork => throw new NotImplementedException();
+    public IUnitOfWork UnitOfWork => ecommerceDbContext;
 
-    public Task<Cart> AddAsync(Cart cart, CancellationToken cancellationToken = default)
+    public async Task<Cart> AddAsync(Cart cart, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var entity = await ecommerceDbContext.AddAsync(cart, cancellationToken);
+            return entity.Entity;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error adding cart");
+            throw;
+        }
     }
 
-    public void Delete(Cart cart, CancellationToken cancellationToken = default)
+    public void Delete(Cart cart)
     {
-        throw new NotImplementedException();
+        try
+        {
+            ecommerceDbContext.Carts.Remove(cart);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error removing cart");
+            throw;
+        }
     }
 
-    public Task<IEnumerable<Cart>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Cart>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await ecommerceDbContext.Carts.ToListAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error fetching carts");
+            throw;
+        }
     }
 
-    public Task<Cart?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<Cart?> GetByGuidAsync(
+        Guid cartGuid,
+        CancellationToken cancellationToken = default
+    )
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await ecommerceDbContext.Carts.FirstOrDefaultAsync(
+                x => x.Guid == cartGuid,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error fetching cart");
+            throw;
+        }
     }
 
-    public Task<Cart> GetByGuidAsync(Guid orderGuid, CancellationToken cancellationToken = default)
+    public async Task<Cart?> GetByUserIdAsync(long userId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await ecommerceDbContext.Carts.FirstOrDefaultAsync(
+                x => x.AppUserId == userId,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error fetching cart");
+            throw;
+        }
     }
 
-    public Task<Cart> GetByUserIdAsync(long userId, CancellationToken cancellationToken = default)
+    public void Update(Cart cart)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<Cart> UpdateAsync(Cart cart, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
+        try
+        {
+            ecommerceDbContext.Update(cart);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error updating cart");
+            throw;
+        }
     }
 }

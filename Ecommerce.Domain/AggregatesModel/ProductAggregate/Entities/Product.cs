@@ -35,10 +35,11 @@ public class Product : AuditableEntity, IAggregateRoot
         return new Product(name, description, userEmail, userId, storeId);
     }
 
-    public void Update(string name, string description)
+    public void Update(string name, string description, string userEmail, long userId)
     {
         Name = name;
         Description = description;
+        AddDomainEvent(new ProductUpdatedEvent(this.Name, userEmail, userId, this.StoreId));
     }
 
     public void AddProductImage(ProductImage productImage) => _productImages.Add(productImage);

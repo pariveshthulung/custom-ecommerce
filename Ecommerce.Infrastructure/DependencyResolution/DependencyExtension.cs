@@ -48,7 +48,8 @@ public static class DependencyExtension
             .AddScoped<ICurrentUserService, CurrentUserService>()
             .AddScoped<ISeederRepository, SeederRepository>()
             .AddScoped<IReadonlyStoreRepository, ReadonlyStoreRepository>()
-            .AddScoped<ILogRepository, LogRepository>();
+            .AddScoped<ILogRepository, LogRepository>()
+            .AddScoped<IReadonlyProductRepository, ReadonlyProductRepository>();
 
         return services;
     }

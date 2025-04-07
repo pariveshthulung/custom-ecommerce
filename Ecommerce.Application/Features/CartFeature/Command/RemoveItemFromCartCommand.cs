@@ -46,7 +46,7 @@ public static class RemoveItemFromCartCommand
             else if (cartItem!.Quantity > 0)
                 cartItem.SubtractQuantity(1);
 
-            await cartRepository.UpdateAsync(cart!, cancellationToken);
+            cartRepository.Update(cart!);
             await cartRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             return BaseResult<Unit>.Ok(Unit.Value);
         }

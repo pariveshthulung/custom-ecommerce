@@ -45,7 +45,7 @@ public static class ToggleCheckCommand
                 );
                 var item = cart?.CartItems.FirstOrDefault(x => x.Guid == request.CartItemGuid);
                 item?.ModifyIsChecked(request.IsChecked);
-                await cartRepository.UpdateAsync(cart!, cancellationToken);
+                cartRepository.Update(cart!);
                 await cartRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
                 return BaseResult<Guid>.Ok(item!.Guid);
             }

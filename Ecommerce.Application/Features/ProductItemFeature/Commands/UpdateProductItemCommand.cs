@@ -3,20 +3,21 @@ namespace Ecommerce.Application.Features.ProductItemFeature.Commands;
 public static class UpdateProductItemCommand
 {
     #region Command
-    public record Command(
-        Guid ProductGuid,
-        Guid ProductItemGuid,
-        string Image,
-        string Sku,
-        int Quantity,
-        decimal Price
-    ) : ICommand<BaseResult<Guid>>;
+    public record Command : ICommand<BaseResult<Response>>
+    {
+        public Guid ProductGuid { get; set; }
+        public Guid ProductItemGuid { get; set; }
+        public string Image { get; set; } = default!;
+        public string SKU { get; set; } = default!;
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+    }
     #endregion
     #region  Handler
     public class CommandHandler(IProductRepository productRepository)
-        : ICommandHandler<Command, BaseResult<Guid>>
+        : ICommandHandler<Command, BaseResult<Response>>
     {
-        public async Task<BaseResult<Guid>> Handle(
+        public async Task<BaseResult<Response>> Handle(
             Command request,
             CancellationToken cancellationToken
         )
@@ -30,14 +31,17 @@ public static class UpdateProductItemCommand
             );
             productItem?.UpdateProductItem(
                 request.Image,
-                request.Sku,
+                request.SKU,
                 request.Quantity,
                 request.Price
             );
-            await productRepository.UpdateAsync(product, cancellationToken);
+            productRepository.Update(product);
             await productRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-            return BaseResult<Guid>.Ok(productItem!.Guid);
+            return BaseResult<Response>.Ok(new Response(productItem!.Guid));
         }
     }
+    #endregion
+    #region Response
+    public record Response(Guid ProductItemGuid);
     #endregion
 }

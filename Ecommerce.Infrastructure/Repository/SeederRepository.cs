@@ -21,6 +21,7 @@ public class SeederRepository(IDbConnection dbConnection, PasswordHasher<AppUser
                     "superadmin@gmail.com",
                     "1234567890",
                     2,
+                    1,
                     null
                 );
                 var password = passwordHasher.HashPassword(appuser, "superadmin");

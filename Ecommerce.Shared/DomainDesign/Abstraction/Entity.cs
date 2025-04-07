@@ -1,6 +1,6 @@
 namespace Ecommerce.Shared.DomainDesign.Abstraction;
 
-public abstract class Entity
+public abstract class Entity : IHasDomainEvents
 {
     public Guid Guid { get; protected set; }
     public bool IsActive { get; protected set; }

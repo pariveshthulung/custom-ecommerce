@@ -9,7 +9,7 @@ public static class AddItemToCartCommand
     #region  Validation
     public class CommandValidator : AbstractValidator<Command>
     {
-        public CommandValidator(IProductRepository productRepository)
+        public CommandValidator(IReadonlyProductRepository productRepository)
         {
             RuleFor(x => x.ProductId).NotNull().NotEmpty().WithMessage("Invalid Product");
 
@@ -40,32 +40,8 @@ public static class AddItemToCartCommand
                 currentUserService.UserId,
                 cancellationToken
             );
-            if (userCart == null)
-            {
-                return await CreateNewCartAsync(
-                    currentUserService.UserId,
-                    request,
-                    cancellationToken
-                );
-            }
 
             return await AddOrUpdateCartItemAsync(userCart, request, cancellationToken);
-        }
-
-        private async Task<BaseResult<Guid>> CreateNewCartAsync(
-            long userId,
-            Command request,
-            CancellationToken cancellationToken
-        )
-        {
-            var newCart = Cart.Create(userId);
-            var newCartItem = CartItem.Create(request.ProductId, request.Quantity);
-
-            newCart.AddCartItem(newCartItem);
-            await cartRepository.AddAsync(newCart, cancellationToken);
-            await cartRepository.UnitOfWork.SaveEntitiesAsync();
-
-            return BaseResult<Guid>.Ok(newCartItem.Guid);
         }
 
         private async Task<BaseResult<Guid>> AddOrUpdateCartItemAsync(
@@ -81,7 +57,7 @@ public static class AddItemToCartCommand
             if (existingCartItem != null)
             {
                 existingCartItem.AddQuantity(request.Quantity);
-                await cartRepository.UpdateAsync(userCart, cancellationToken);
+                cartRepository.Update(userCart);
                 await cartRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
                 return BaseResult<Guid>.Ok(existingCartItem.Guid);
@@ -90,7 +66,7 @@ public static class AddItemToCartCommand
             {
                 var newCartItem = CartItem.Create(request.ProductId, request.Quantity);
                 userCart.AddCartItem(newCartItem);
-                await cartRepository.UpdateAsync(userCart, cancellationToken);
+                cartRepository.Update(userCart);
                 await cartRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
                 return BaseResult<Guid>.Ok(newCartItem.Guid);

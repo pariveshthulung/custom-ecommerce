@@ -3,7 +3,7 @@ namespace Ecommerce.Domain.AggregatesModel.ProductAggregate.Entities;
 public class ProductImage : Entity
 {
     public long ProductId { get; private set; }
-    public string Image { get; private set; } = null!;
+    public string Image { get; private set; } = default!;
 
     private ProductImage(long productId, string image)
     {

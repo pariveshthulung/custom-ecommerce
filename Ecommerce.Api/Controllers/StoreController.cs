@@ -34,7 +34,7 @@ public class StoreController(IMapper mapper, ISender sender, ILogger<StoreContro
         }
     }
 
-    [HttpPost("store/create")]
+    [HttpPost("store")]
     [SwaggerOperation(
         Summary = "Create store",
         Description = "Create store",
@@ -65,7 +65,7 @@ public class StoreController(IMapper mapper, ISender sender, ILogger<StoreContro
         }
     }
 
-    [HttpPut("store/{storeGuid:guid}/update")]
+    [HttpPut("store/{storeGuid:guid}")]
     [SwaggerOperation(
         Summary = "Update store",
         Description = "Update store",

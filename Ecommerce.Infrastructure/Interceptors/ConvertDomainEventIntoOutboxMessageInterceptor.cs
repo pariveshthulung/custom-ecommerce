@@ -14,7 +14,7 @@ public sealed class ConvertDomainEventIntoOutboxMessageInterceptor(
         if (dbContext is null)
             return base.SavingChangesAsync(eventData, result, cancellationToken);
         var domainEntities = dbContext
-            .ChangeTracker.Entries<Entity>()
+            .ChangeTracker.Entries<IHasDomainEvents>()
             .Where(e => e.Entity.DomainEvent != null && e.Entity.DomainEvent.Any());
 
         var outBoxMessages = domainEntities

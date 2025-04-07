@@ -15,8 +15,6 @@
     <Folder Include="Features/CategoryFeature/" />
     <Folder Include="Features/CategoryFeature/Commands/" />
     <Folder Include="Features/CategoryFeature/Queries/" />
-    <Folder Include="Features/ProductFeature/Queries/" />
-    <Folder Include="Features/ProductItemFeature/Queries/" />
     <Folder Include="Features/UserFeature/Commands/" />
   </ItemGroup>
 

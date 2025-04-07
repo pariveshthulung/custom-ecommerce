@@ -6,6 +6,16 @@ public static class DeleteProductCommand
     public record Command(Guid ProductGuid) : ICommand<BaseResult<Unit>>;
     #endregion
     #region Validation
+    public sealed class Validator : AbstractValidator<Command>
+    {
+        public Validator(IReadonlyProductRepository readonlyProductRepository)
+        {
+            RuleFor(x => x.ProductGuid).NotEmpty().WithMessage("Product id is required");
+            RuleFor(x => x.ProductGuid)
+                .MustAsync(readonlyProductRepository.ExistAsync)
+                .WithMessage("Product doesnot exist");
+        }
+    }
     #endregion
     #region Handler
     public class Handler : ICommandHandler<Command, BaseResult<Unit>>

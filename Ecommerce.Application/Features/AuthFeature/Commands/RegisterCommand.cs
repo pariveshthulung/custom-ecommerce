@@ -31,9 +31,10 @@ public static class RegisterCommand
                 .Must(
                     (x, cancellationToken) =>
                     {
-                        var currentUserRoleId = Enumeration
-                            .FromName<RoleEnum>(userService.UserRole ?? "")
-                            .Id;
+                        int? currentUserRoleId =
+                            userService.UserRole != null
+                                ? Enumeration.FromName<RoleEnum>(userService.UserRole).Id
+                                : null;
                         return _CheckRegisterPermission(currentUserRoleId, x.RoleId);
                     }
                 )
@@ -75,8 +76,10 @@ public static class RegisterCommand
                 .WithMessage("Invalid phone number format.");
         }
 
-        private static bool _CheckRegisterPermission(int currentUserRole, int newUserRole)
+        private static bool _CheckRegisterPermission(int? currentUserRole, int newUserRole)
         {
+            if (currentUserRole is null && newUserRole == RoleEnum.Sales.Id)
+                return true;
             if (currentUserRole == RoleEnum.SuperAdmin.Id)
                 return true;
             if (currentUserRole == RoleEnum.Admin.Id && newUserRole != RoleEnum.SuperAdmin.Id)
@@ -88,7 +91,7 @@ public static class RegisterCommand
 
     #region  Handler
     public class RegisterCommandHandler(
-        Logger<RegisterCommandHandler> logger,
+        ILogger<RegisterCommandHandler> logger,
         ICurrentUserService currentUserService,
         UserManager<AppUser> userManager
     ) : ICommandHandler<Command, BaseResult<Response>>
@@ -107,6 +110,7 @@ public static class RegisterCommand
                     request.Email,
                     request.PhoneNo,
                     request.RoleId,
+                    currentUser?.Id,
                     currentUser?.StoreId
                 );
 

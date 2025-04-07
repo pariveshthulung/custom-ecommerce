@@ -24,18 +24,21 @@ public class AuthController(ISender sender, ILogger<AuthController> logger, IMap
         {
             var command = Mapper.Map<LoginCommand.Command>(loginDto);
             var response = await Sender.Send(command, cancellationToken);
-            Response.Cookies.Append(
-                "authToken",
-                response.Data.accessToken,
-                new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
-                    Expires = DateTime.UtcNow.AddHours(1)
-                }
-            );
-            return Ok(response);
+            if (response.Success)
+            {
+                Response.Cookies.Append(
+                    "authToken",
+                    response.Data.accessToken,
+                    new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTime.UtcNow.AddHours(1)
+                    }
+                );
+            }
+            return response.Success ? Ok(response) : response.ToProblemDetail();
         }
         catch (Exception ex)
         {
@@ -44,7 +47,6 @@ public class AuthController(ISender sender, ILogger<AuthController> logger, IMap
         }
     }
 
-    [Authorize]
     [HttpPost("auth/register")]
     [SwaggerOperation(
         Summary = "Register user",
@@ -52,7 +54,7 @@ public class AuthController(ISender sender, ILogger<AuthController> logger, IMap
         OperationId = "Auth.Register",
         Tags = [_swaggerOperationTag]
     )]
-    [SwaggerResponse(StatusCodes.Status201Created, "Register user")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Register user", typeof(Guid))]
     [SwaggerResponse(
         StatusCodes.Status500InternalServerError,
         "Application failed to process the request"
@@ -66,7 +68,7 @@ public class AuthController(ISender sender, ILogger<AuthController> logger, IMap
         {
             var command = Mapper.Map<RegisterCommand.Command>(registerDto);
             var response = await Sender.Send(command, cancellationToken);
-            return Created();
+            return Ok(new { userGuid = response.Data.UserGuid });
         }
         catch (Exception ex)
         {

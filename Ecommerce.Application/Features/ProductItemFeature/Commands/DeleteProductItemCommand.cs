@@ -26,7 +26,7 @@ public static class DeleteProductItemCommand
                 x.Guid == request.ProductItemGuid
             );
             product.RemoveProductItem(productItem!);
-            await _productRepository.UpdateAsync(product, cancellationToken);
+            _productRepository.Update(product);
             await _productRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             return BaseResult<Unit>.Ok(Unit.Value);
         }

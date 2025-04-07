@@ -12,14 +12,30 @@ public class AppUserRepository(
         throw new NotImplementedException();
     }
 
-    public void Delete(AppUser customer, CancellationToken cancellationToken)
+    public void Delete(AppUser customer)
     {
-        throw new NotImplementedException();
+        try
+        {
+            ecommerceDbContext.Remove(customer);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error deleting user.");
+            throw;
+        }
     }
 
-    public Task<IEnumerable<AppUser>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<AppUser>> GetAllAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await ecommerceDbContext.AppUsers.ToListAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error fetching list of user.");
+            throw;
+        }
     }
 
     public async Task<AppUser?> GetByEmailAsync(string email, CancellationToken cancellationToken)
@@ -33,19 +49,38 @@ public class AppUserRepository(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error updating user.");
+            logger.LogError(ex, "Error fetching user.");
             throw;
         }
     }
 
-    public Task<AppUser?> GetByGuidAsync(Guid customerGuid, CancellationToken cancellationToken)
+    public async Task<AppUser?> GetByGuidAsync(Guid userGuid, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await ecommerceDbContext.AppUsers.FirstOrDefaultAsync(
+                x => x.UserGuid == userGuid,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error fetching user.");
+            throw;
+        }
     }
 
-    public Task<AppUser> UpdateAsync(AppUser customer, CancellationToken cancellationToken)
+    public void Update(AppUser user)
     {
-        throw new NotImplementedException();
+        try
+        {
+            ecommerceDbContext.Update(user);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error updating user.");
+            throw;
+        }
     }
 }
 

@@ -1,7 +1,9 @@
+using Ecommerce.Domain.AggregatesModel.AppUserAggregate.Events;
+
 namespace Ecommerce.Domain.AggregatesModel.AppUserAggregate.Entities;
 
 //need to inherite from enitity class so  it can add domain event
-public class AppUser : IdentityUser<long>, IAggregateRoot
+public class AppUser : IdentityUser<long>, IAggregateRoot, IHasDomainEvents
 {
     public string FirstName { get; private set; } = default!;
     public Guid UserGuid { get; private set; }
@@ -19,6 +21,20 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
     public Address? Address { get; private set; } = default!;
     private IList<long>? _ordersId = [];
     public IReadOnlyCollection<long> OrdersId => _ordersId.AsReadOnly();
+    private List<INotification> _domainEvent = [];
+    public IReadOnlyCollection<INotification> DomainEvent => _domainEvent.AsReadOnly();
+
+    public void AddDomainEvent(INotification domainEvent)
+    {
+        _domainEvent ??= [];
+        _domainEvent.Add(domainEvent);
+    }
+
+    public void RemoveDomainEvent(INotification domainEvent) => _domainEvent.Remove(domainEvent);
+
+    public void ClearDomainEvent() => _domainEvent.Clear();
+
+    private AppUser() { }
 
     private AppUser(
         string firstName,
@@ -26,6 +42,7 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
         string email,
         string phoneNo,
         int roleId,
+        long? userId,
         long? storeId
     )
     {
@@ -38,6 +55,15 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
         StoreId = storeId;
         UserGuid = Guid.NewGuid();
         // add domain event
+        AddDomainEvent(
+            new AppUserRegisteredEvent(
+                this.Email,
+                this.UserGuid,
+                EventType.AppUserRegistered,
+                userId ?? 1,
+                null
+            )
+        );
     }
 
     public static AppUser Create(
@@ -46,8 +72,9 @@ public class AppUser : IdentityUser<long>, IAggregateRoot
         string email,
         string phoneNo,
         int roleId,
+        long? userId,
         long? storeId
-    ) => new(firstName, lastName, email, phoneNo, roleId, storeId);
+    ) => new(firstName, lastName, email, phoneNo, roleId, userId, storeId);
 
     public void UpdateStoreId(long storeId) => StoreId = storeId;
 }

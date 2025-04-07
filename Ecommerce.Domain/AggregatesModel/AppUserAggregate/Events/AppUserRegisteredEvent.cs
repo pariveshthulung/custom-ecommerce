@@ -1,4 +1,9 @@
 namespace Ecommerce.Domain.AggregatesModel.AppUserAggregate.Events;
 
-public record AppUserRegisteredEvent(EventType EventType, string Description, long AppUserId)
-    : INotification;
+public record AppUserRegisteredEvent(
+    string NewUserEmail,
+    Guid UserGuid,
+    EventType EventType,
+    long AppUserId,
+    long? StoreId
+) : INotification;
